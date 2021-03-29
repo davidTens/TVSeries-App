@@ -5,7 +5,9 @@ The app is built using Swift 5.0. No third party libraries were used.
 Requires iOS 9.0 or later. Available for iPhone, iPad and iPod touch.
 
 Supports Light and Dark modes.
+
 Supports portrait and landscape orientaions.
+
 Split Screen available for iPad OS and iPhone Plus models.
 
 First view fetches popular TV Series from "https://developers.themoviedb.org/3/tv/get-popular-tv-shows" and has infinte scroll using paging function.
