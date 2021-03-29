@@ -6,7 +6,7 @@ Requires iOS 9.0 or later. Available for iPhone, iPad and iPod touch.
 
 Supports Light and Dark modes.
 
-Supports portrait and landscape orientaions.
+Supports portrait and landscape orientations.
 
 Split Screen available for iPad OS and iPhone Plus models.
 
