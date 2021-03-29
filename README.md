@@ -17,6 +17,6 @@ The detail view contains info about the specific serie such as name, image, over
 
 User can also see similar tv series on the detail page.
 
-Time spent roughly ~ 25 hours.
+Time spent around ~ 25 hours.
 
 
