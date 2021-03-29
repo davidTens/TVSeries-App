@@ -10,7 +10,7 @@ Supports portrait and landscape orientaions.
 
 Split Screen available for iPad OS and iPhone Plus models.
 
-First view fetches popular TV Series from "https://developers.themoviedb.org/3/tv/get-popular-tv-shows" and has infinte scroll using paging function.
+First view fetches popular TV Series from "https://developers.themoviedb.org/3/tv/get-popular-tv-shows" and has infinite scroll using paging function.
 
 First view also has a search engine. Which goes through the database.
 
