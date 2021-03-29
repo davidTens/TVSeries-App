@@ -1,5 +1,3 @@
-![Simulator Screen Shot - iPhone 12 Pro - 2021-03-29 at 09 37 09_iphone12prographite_portrait](https://user-images.githubusercontent.com/79376703/112800105-3f786300-9080-11eb-806f-4ec6b52e1df7.png)
-![Simulator Screen Shot - iPad Air (4th generation) - 2021-03-29 at 09 39 38_ipadair4_silver_landscape](https://user-images.githubusercontent.com/79376703/112800113-44d5ad80-9080-11eb-873e-221c66b39239.png)
 # TVSeries-App
 
 The app is built using Swift 5.0. No third party libraries were used.
