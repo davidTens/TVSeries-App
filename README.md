@@ -1,6 +1,7 @@
 # TVSeries-App
 
 The app is built using Swift 5.0. No third party libraries were used.
+
 Requires iOS 9.0 or later. Available for iPhone, iPad and iPod touch.
 
 Supports Light and Dark modes.
