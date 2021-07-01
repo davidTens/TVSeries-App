@@ -9,18 +9,15 @@ import UIKit
 
 final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
     
-    var tvSeries = [TVSeries]()
-    var searchTVSeries = [TVSeries]()
-    
-    let cellId = "cellId"
+    private var tvSeries = [TVSeries]()
+    private var searchTVSeries = [TVSeries]()
+    private let cellId = "cellId"
     private var customRefreshControl = UIRefreshControl()
-    let searchController = UISearchController(searchResultsController: nil)
+    private let searchController = UISearchController(searchResultsController: nil)
     
-    lazy var page = 1
-    lazy var language = "en-US"
-    
-    lazy var isLoading = false
-    
+    private lazy var page = 1
+    private lazy var language = "en-US"
+    private lazy var isLoading = false
     private lazy var deviceModelId = [
         "iPhone 6 Plus",
         "iPhone 6s Plus",
@@ -28,7 +25,7 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         "iPhone 8 Plus"
     ]
     
-    lazy var errorMessageLabel: UILabel = {
+    private lazy var errorMessageLabel: UILabel = {
         let errorMessageLabel = UILabel()
         errorMessageLabel.isUserInteractionEnabled = true
         errorMessageLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(errorMessageDissapear)))
@@ -40,7 +37,7 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         return errorMessageLabel
     }()
     
-    lazy var noResultsLabel: UILabel = {
+    private lazy var noResultsLabel: UILabel = {
         let errorMessageLabel = UILabel()
         errorMessageLabel.isUserInteractionEnabled = true
         errorMessageLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(noResultsLabelDissapear)))
@@ -199,5 +196,81 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         updateSeries(type: "tv", language: language, page: 1, query: "&query=" + query!.replacingOccurrences(of: " ", with: "%20"))
     }
     
+}
+
+extension TVSeriesListVC: UISearchBarDelegate {
+
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return searchController.isActive && searchController.searchBar.text != "" ? searchTVSeries.count : tvSeries.count
+    }
+
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 187
+    }
+
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if searchController.isActive && searchController.searchBar.text != "" { }
+        else {
+            if isLoading == false {
+                if indexPath.row + 1 == tvSeries.count {
+                    page += 1
+                    getSeries(type: "popular", language: language, page: page)
+                }
+            }
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId) as! TVSeriesListCell
+        cell.backgroundColor = .clear
+        if searchController.isActive && searchController.searchBar.text != "" {
+            let tvSeriesId = searchTVSeries[indexPath.row]
+            cell.tvSeries = tvSeriesId
+        } else {
+            let tvSeriesId = tvSeries[indexPath.row]
+            cell.tvSeries = tvSeriesId
+        }
+        return cell
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if searchController.isActive && searchController.searchBar.text != "" {
+            let seriesId = searchTVSeries[indexPath.row]
+            pushToDetailView(tvId: seriesId)
+        } else {
+            let seriesId = tvSeries[indexPath.row]
+            pushToDetailView(tvId: seriesId)
+        }
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        if searchTVSeries.count >= 0 {
+            searchTVSeries.removeAll()
+            tableView.reloadData()
+            page = 1
+            getSeries(type: "popular", language: language, page: page)
+        }
+        
+        noResultsLabel.removeFromSuperview()
+        searchBar.text = nil
+        searchBar.setShowsCancelButton(false, animated: true)
+        searchBar.resignFirstResponder()
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if searchController.isActive && searchController.searchBar.text != "" {
+            searchTextChanged(query: searchBar.text)
+        }
+        searchBar.resignFirstResponder()
+    }
+
 }
 
