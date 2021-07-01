@@ -76,6 +76,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0BB113D1268E330200BDE153 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				751B9BB12611A252005EA5A2 /* AppDelegate.swift */,
+				751B9BBA2611A254005EA5A2 /* Assets.xcassets */,
+				751B9BBC2611A254005EA5A2 /* LaunchScreen.storyboard */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
 		751B9BA52611A252005EA5A2 = {
 			isa = PBXGroup;
 			children = (
@@ -102,9 +112,7 @@
 				751B9BD82611A2C9005EA5A2 /* CellViews */,
 				751B9BD22611A2BA005EA5A2 /* Networking */,
 				751B9BCA2611A2AB005EA5A2 /* ViewControllers */,
-				751B9BB12611A252005EA5A2 /* AppDelegate.swift */,
-				751B9BBA2611A254005EA5A2 /* Assets.xcassets */,
-				751B9BBC2611A254005EA5A2 /* LaunchScreen.storyboard */,
+				0BB113D1268E330200BDE153 /* Support */,
 				751B9BBF2611A254005EA5A2 /* Info.plist */,
 			);
 			path = "TVSeries App";
