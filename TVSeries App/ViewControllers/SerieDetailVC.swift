@@ -36,10 +36,10 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
     
     lazy var listOfDataToShow = [
         tvSerieId?.overview ?? absenceOfValue,
-        tvSerieId?.original_name ?? absenceOfValue,
-        tvSerieId?.first_air_date ?? absenceOfValue,
-        tvSerieId?.origin_country.first ?? absenceOfValue,
-        tvSerieId?.original_language ?? absenceOfValue
+        tvSerieId?.originalName ?? absenceOfValue,
+        tvSerieId?.firstAirDate ?? absenceOfValue,
+        tvSerieId?.originCountry.first ?? absenceOfValue,
+        tvSerieId?.originalLanguage ?? absenceOfValue
     ]
     
     deinit { print("OS reclaiming memory for DetailVC - No Ratain Cycle/Leak!") }
@@ -60,7 +60,7 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
         let customImageView = UIImageView()
         customImageView.backgroundColor = .clear
 
-        if let imageURL = tvSerieId?.backdrop_path {
+        if let imageURL = tvSerieId?.backdropPath {
             customImageView.loadImageUsingCacheWithURL(urlString: "https://image.tmdb.org/t/p/w500/\(imageURL)")
         }
         return customImageView

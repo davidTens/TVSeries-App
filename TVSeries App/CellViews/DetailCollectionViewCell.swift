@@ -13,7 +13,7 @@ class DetailCollectionViewCell: UICollectionViewCell {
         didSet {
             titleLabel.text = tvSeriesId?.name
             
-            if let imageURL = tvSeriesId?.poster_path {
+            if let imageURL = tvSeriesId?.posterPath {
                 let imageURLFinalPath = "https://image.tmdb.org/t/p/w500/\(imageURL)"
                 customImageView.loadImageUsingCacheWithURL(urlString: imageURLFinalPath)
             }

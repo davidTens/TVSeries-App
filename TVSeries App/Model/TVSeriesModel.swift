@@ -7,19 +7,51 @@
 
 import Foundation
 
+struct TVSeriesList: Decodable {
+    
+    let page: Int
+    let results: [TVSeries]
+    let totalResults: Int
+    let totalPages: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case page = "page"
+        case results = "results"
+        case totalResults = "total_results"
+        case totalPages = "total_pages"
+    }
+}
+
 struct TVSeries: Decodable {
     
-    let poster_path: String?
+    let posterPath: String?
     let popularity: Double
     let id: Int
-    let backdrop_path: String?
-    let vote_average: Decimal
+    let backdropPath: String?
+    let voteAverage: Decimal
     let overview: String
-    let first_air_date: String
-    let origin_country: Array<String>
-    let genre_ids: Array<Int>
-    let original_language: String
-    let vote_count: Int
+    let firstAirDate: String
+    let originCountry: Array<String>
+    let genreIds: Array<Int>
+    let originalLanguage: String
+    let voteCount: Int
     let name: String
-    let original_name: String
+    let originalName: String
+    
+    enum CodingKeys: String, CodingKey {
+        case posterPath = "poster_path"
+        case popularity = "popularity"
+        case id = "id"
+        case backdropPath = "backdrop_path"
+        case voteAverage = "vote_average"
+        case overview = "overview"
+        case firstAirDate = "first_air_date"
+        case originCountry = "origin_country"
+        case genreIds = "genre_ids"
+        case originalLanguage = "original_language"
+        case voteCount = "vote_count"
+        case name = "name"
+        case originalName = "original_name"
+        
+    }
 }

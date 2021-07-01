@@ -20,7 +20,6 @@
 		751B9BDE2611A2C9005EA5A2 /* DetailCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751B9BDB2611A2C9005EA5A2 /* DetailCollectionViewCell.swift */; };
 		751B9BE32611A2CF005EA5A2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751B9BE12611A2CF005EA5A2 /* Extensions.swift */; };
 		751B9BE42611A2CF005EA5A2 /* TVSeriesListExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751B9BE22611A2CF005EA5A2 /* TVSeriesListExtension.swift */; };
-		751B9BE92611A2DA005EA5A2 /* TVSeriesListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751B9BE72611A2DA005EA5A2 /* TVSeriesListModel.swift */; };
 		751B9BEA2611A2DA005EA5A2 /* TVSeriesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751B9BE82611A2DA005EA5A2 /* TVSeriesModel.swift */; };
 		751B9BFA2611A340005EA5A2 /* TVSeries_AppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751B9BF92611A340005EA5A2 /* TVSeries_AppTests.swift */; };
 /* End PBXBuildFile section */
@@ -51,7 +50,6 @@
 		751B9BDB2611A2C9005EA5A2 /* DetailCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailCollectionViewCell.swift; sourceTree = "<group>"; };
 		751B9BE12611A2CF005EA5A2 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		751B9BE22611A2CF005EA5A2 /* TVSeriesListExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVSeriesListExtension.swift; sourceTree = "<group>"; };
-		751B9BE72611A2DA005EA5A2 /* TVSeriesListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVSeriesListModel.swift; sourceTree = "<group>"; };
 		751B9BE82611A2DA005EA5A2 /* TVSeriesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVSeriesModel.swift; sourceTree = "<group>"; };
 		751B9BF72611A340005EA5A2 /* TVSeries AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TVSeries AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		751B9BF92611A340005EA5A2 /* TVSeries_AppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSeries_AppTests.swift; sourceTree = "<group>"; };
@@ -159,7 +157,6 @@
 		751B9BE62611A2DA005EA5A2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				751B9BE72611A2DA005EA5A2 /* TVSeriesListModel.swift */,
 				751B9BE82611A2DA005EA5A2 /* TVSeriesModel.swift */,
 			);
 			path = Model;
@@ -282,7 +279,6 @@
 				751B9BD52611A2BA005EA5A2 /* ErrorHandling.swift in Sources */,
 				751B9BE32611A2CF005EA5A2 /* Extensions.swift in Sources */,
 				751B9BD02611A2AB005EA5A2 /* SerieDetailVC.swift in Sources */,
-				751B9BE92611A2DA005EA5A2 /* TVSeriesListModel.swift in Sources */,
 				751B9BD62611A2BA005EA5A2 /* NetworkRequest.swift in Sources */,
 				751B9BCF2611A2AB005EA5A2 /* TVSeriesListVC.swift in Sources */,
 				751B9BDE2611A2C9005EA5A2 /* DetailCollectionViewCell.swift in Sources */,

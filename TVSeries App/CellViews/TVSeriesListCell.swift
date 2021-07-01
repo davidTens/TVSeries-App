@@ -14,11 +14,11 @@ class TVSeriesListCell: UITableViewCell {
             
             titleTextView.text = tvSeries?.name
             
-            if let ratingString = tvSeries?.vote_average {
+            if let ratingString = tvSeries?.voteAverage {
                 ratingLabel.text = "Rating - \(ratingString)"
             }
             
-            if let imageURL = tvSeries?.poster_path {
+            if let imageURL = tvSeries?.posterPath {
                 let imageURLFinalPath = "https://image.tmdb.org/t/p/w500/\(imageURL)"
                 customImageView.loadImageUsingCacheWithURL(urlString: imageURLFinalPath)
             }
@@ -29,7 +29,7 @@ class TVSeriesListCell: UITableViewCell {
         let customImageView = UIImageView()
         customImageView.backgroundColor = UIColor(hexFromString: "#F4F4F4")
         customImageView.layer.masksToBounds = true
-        customImageView.layer.cornerRadius = 16.0
+        customImageView.layer.cornerRadius = 10
         return customImageView
     }()
     
