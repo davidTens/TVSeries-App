@@ -9,17 +9,15 @@ import UIKit
 
 final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    let collCellId = "collectionCellId"
-    
     var tvSerieId: TVSeries?
-    var tvResults = [TVSeries]()
+    private var tvResults = [TVSeries]()
+    private let collCellId = "collectionCellId"
+    private let tableCellId = "tableCellId"
+    private lazy var absenceOfValue = "Nothing to show"
+    private lazy var flowLayot = UICollectionViewFlowLayout()
+    private let suggestedTitle = UILabel()
     
-    lazy var absenceOfValue = "Nothing to show"
-    lazy var flowLayot = UICollectionViewFlowLayout()
-    
-    let suggestedTitle = UILabel()
-    
-    lazy var descriptionData = [
+    private lazy var descriptionData = [
         "Overview",
         "Name",
         "First Air",
@@ -27,14 +25,14 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
         "Language"
     ]
     
-    lazy var deviceModelId = [
+    private lazy var deviceModelId = [
         "iPhone 6 Plus",
         "iPhone 6s Plus",
         "iPhone 7 Plus",
         "iPhone 8 Plus"
     ]
     
-    lazy var listOfDataToShow = [
+    private lazy var listOfDataToShow = [
         tvSerieId?.overview ?? absenceOfValue,
         tvSerieId?.originalName ?? absenceOfValue,
         tvSerieId?.firstAirDate ?? absenceOfValue,
@@ -44,9 +42,7 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
     
     deinit { print("OS reclaiming memory for DetailVC - No Ratain Cycle/Leak!") }
     
-    let tableCellId = "tableCellId"
-    
-    lazy var noImageLabel: UILabel = {
+    private lazy var noImageLabel: UILabel = {
         let noImageLabel = UILabel()
         noImageLabel.font = .boldSystemFont(ofSize: 17)
         noImageLabel.textAlignment = .center
@@ -56,10 +52,9 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
         return noImageLabel
     }()
     
-    lazy var customImageView: UIImageView = {
+    private lazy var customImageView: UIImageView = {
         let customImageView = UIImageView()
         customImageView.backgroundColor = .clear
-
         if let imageURL = tvSerieId?.backdropPath {
             customImageView.loadImageUsingCacheWithURL(urlString: "https://image.tmdb.org/t/p/w500/\(imageURL)")
         }
@@ -72,7 +67,7 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
         return suggestedBackgroundView
     }()
     
-    lazy var customCollectionView: UICollectionView = {
+    private lazy var customCollectionView: UICollectionView = {
         let customCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayot)
         flowLayot.scrollDirection = .horizontal
         flowLayot.itemSize = CGSize(width: 140, height: 200)
@@ -100,7 +95,7 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
         }
     }
     
-    fileprivate func pushToDetailView(tvId: TVSeries) {
+    private func pushToDetailView(tvId: TVSeries) {
         let detailViewController = SerieDetailVC()
         detailViewController.tvSerieId = tvId
         

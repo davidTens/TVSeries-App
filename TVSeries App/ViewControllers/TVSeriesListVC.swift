@@ -46,6 +46,7 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         errorMessageLabel.backgroundColor = #colorLiteral(red: 0.3686189353, green: 0.3664327264, blue: 0.370302707, alpha: 0.9290631023) | #colorLiteral(red: 0.5049917102, green: 0.5019935966, blue: 0.5072988272, alpha: 1)
         errorMessageLabel.textColor = .white
         errorMessageLabel.text = "No Results"
+        errorMessageLabel.isHidden = true
         return errorMessageLabel
     }()
     
