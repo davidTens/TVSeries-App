@@ -33,7 +33,6 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         errorMessageLabel.textAlignment = .center
         errorMessageLabel.backgroundColor = #colorLiteral(red: 0.3686189353, green: 0.3664327264, blue: 0.370302707, alpha: 0.9290631023) | #colorLiteral(red: 0.5049917102, green: 0.5019935966, blue: 0.5072988272, alpha: 1)
         errorMessageLabel.textColor = .white
-        errorMessageLabel.text = "An error occured"
         return errorMessageLabel
     }()
     
@@ -45,8 +44,6 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         errorMessageLabel.textAlignment = .center
         errorMessageLabel.backgroundColor = #colorLiteral(red: 0.3686189353, green: 0.3664327264, blue: 0.370302707, alpha: 0.9290631023) | #colorLiteral(red: 0.5049917102, green: 0.5019935966, blue: 0.5072988272, alpha: 1)
         errorMessageLabel.textColor = .white
-        errorMessageLabel.text = "No Results"
-        errorMessageLabel.isHidden = true
         return errorMessageLabel
     }()
     
@@ -84,28 +81,28 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
     
     func getSeries(type: StringIntProtocol, language: String, page: Int) {
         isLoading = true
+        customRefreshControl.beginRefreshing()
         
-        DispatchQueue.global(qos: .userInteractive).async {
+        NetworkRequest.shared.getTvSeries(type: type, tv: "tv", similar: nil, search: nil, query: nil, language: language, page: page) { [weak self] result in
+            guard let self = self else { return }
             
-            NetworkRequest.shared.getTvSeries(type: type, tv: "tv", similar: nil, search: nil, query: nil, language: language, page: page) { [weak self] result in
-                guard let self = self else { return }
+            DispatchQueue.main.async {
                 
-                DispatchQueue.main.async {
+                switch result {
+                case .success(let list):
                     
-                    switch result {
-                    case .success(let list):
-                        
-                        self.tvSeries.append(contentsOf: list.results)
-                        self.tableView.reloadData()
-                        
-                    case .failure(let error):
-                        print(error)
-                        self.page += 1
-                        self.errorMessageAppear()
-                    }
+                    self.tvSeries.append(contentsOf: list.results)
+                    self.tableView.reloadData()
+                    
+                case .failure(let error):
+                    print(error)
+                    self.page += 1
+                    self.errorMessageAppear(error.rawValue)
                 }
+                self.customRefreshControl.endRefreshing()
                 self.isLoading = false
             }
+            
         }
     }
     
@@ -114,35 +111,32 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         customRefreshControl.beginRefreshing()
         isLoading = true
         
-        DispatchQueue.global(qos: .userInteractive).async {
+        NetworkRequest.shared.getTvSeries(type: type, tv: nil, similar: nil, search: "search", query: query, language: language, page: page) { [weak self] result in
+            guard let self = self else { return }
             
-            NetworkRequest.shared.getTvSeries(type: type, tv: nil, similar: nil, search: "search", query: query, language: language, page: page) { [weak self] result in
-                guard let self = self else { return }
+            DispatchQueue.main.async {
                 
-                DispatchQueue.main.async {
+                switch result {
+                case .success(let list):
                     
-                    switch result {
-                    case .success(let list):
-                        
-                        self.noResultsLabelDissapear()
-                        self.searchTVSeries.append(contentsOf: list.results)
-                        self.tableView.reloadData()
-                        self.customRefreshControl.endRefreshing()
-                        
-                    case .failure(let error):
-                        print(error)
-                        self.noResultsMessage()
-                        self.customRefreshControl.endRefreshing()
-                    }
+                    self.noResultsLabelDissapear()
+                    self.searchTVSeries.append(contentsOf: list.results)
+                    self.tableView.reloadData()
+                    
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    self.noResultsMessage(error.rawValue)
                 }
                 self.isLoading = false
+                self.customRefreshControl.endRefreshing()
             }
         }
         
     }
     
-    private func noResultsMessage() {
+    private func noResultsMessage(_ error: String) {
         view.addSubview(noResultsLabel)
+        noResultsLabel.text = error
         
         if #available(iOS 11.0, *) {
             noResultsLabel.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: .init(width: 0, height: 45))
@@ -151,8 +145,10 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         }
     }
     
-    private func errorMessageAppear() {
+    private func errorMessageAppear(_ error: String) {
         view.addSubview(errorMessageLabel)
+        errorMessageLabel.text = error
+        
         if #available(iOS 11.0, *) {
             errorMessageLabel.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: .init(width: 0, height: 45))
         } else {
