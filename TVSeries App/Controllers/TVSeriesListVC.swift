@@ -25,27 +25,7 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         "iPhone 8 Plus"
     ]
     
-    private lazy var errorMessageLabel: UILabel = {
-        let errorMessageLabel = UILabel()
-        errorMessageLabel.isUserInteractionEnabled = true
-        errorMessageLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(errorMessageDissapear)))
-        errorMessageLabel.font = .boldSystemFont(ofSize: 18)
-        errorMessageLabel.textAlignment = .center
-        errorMessageLabel.backgroundColor = #colorLiteral(red: 0.3686189353, green: 0.3664327264, blue: 0.370302707, alpha: 0.9290631023) | #colorLiteral(red: 0.5049917102, green: 0.5019935966, blue: 0.5072988272, alpha: 1)
-        errorMessageLabel.textColor = .white
-        return errorMessageLabel
-    }()
-    
-    private lazy var noResultsLabel: UILabel = {
-        let errorMessageLabel = UILabel()
-        errorMessageLabel.isUserInteractionEnabled = true
-        errorMessageLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(noResultsLabelDissapear)))
-        errorMessageLabel.font = .boldSystemFont(ofSize: 18)
-        errorMessageLabel.textAlignment = .center
-        errorMessageLabel.backgroundColor = #colorLiteral(red: 0.3686189353, green: 0.3664327264, blue: 0.370302707, alpha: 0.9290631023) | #colorLiteral(red: 0.5049917102, green: 0.5019935966, blue: 0.5072988272, alpha: 1)
-        errorMessageLabel.textColor = .white
-        return errorMessageLabel
-    }()
+    private var errorMessageView: ErrorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,6 +43,7 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         tableView.register(TVSeriesListCell.self, forCellReuseIdentifier: cellId)
         tableView.separatorStyle = .none
         getSeries(type: "popular", language: language, page: page)
+        errorMessageAppear()
     }
     
     fileprivate func searchControllerSetUp() {
@@ -92,12 +73,14 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
                 case .success(let list):
                     
                     self.tvSeries.append(contentsOf: list.results)
+                    self.errorMessageView.isHidden = true
                     self.tableView.reloadData()
                     
                 case .failure(let error):
-                    print(error)
+                    print(error.localizedDescription)
                     self.page += 1
-                    self.errorMessageAppear(error.rawValue)
+                    self.errorMessageView.isHidden = false
+                    self.errorMessageView.errorMessageLabel.text = error.rawValue
                 }
                 self.customRefreshControl.endRefreshing()
                 self.isLoading = false
@@ -119,13 +102,14 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
                 switch result {
                 case .success(let list):
                     
-                    self.noResultsLabelDissapear()
                     self.searchTVSeries.append(contentsOf: list.results)
+                    self.errorMessageView.isHidden = true
                     self.tableView.reloadData()
                     
                 case .failure(let error):
                     print(error.localizedDescription)
-                    self.noResultsMessage(error.rawValue)
+                    self.errorMessageView.isHidden = false
+                    self.errorMessageView.errorMessageLabel.text = error.rawValue
                 }
                 self.isLoading = false
                 self.customRefreshControl.endRefreshing()
@@ -134,30 +118,20 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         
     }
     
-    private func noResultsMessage(_ error: String) {
-        view.addSubview(noResultsLabel)
-        noResultsLabel.text = error
+    private func errorMessageAppear() {
+        errorMessageView = ErrorView()
+        errorMessageView.isHidden = true
+        view.addSubview(errorMessageView)
         
         if #available(iOS 11.0, *) {
-            noResultsLabel.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: .init(width: 0, height: 45))
+            errorMessageView.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: .init(width: 0, height: 45))
         } else {
-            noResultsLabel.layout(top: view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, size: .init(width: 0, height: 45))
-        }
-    }
-    
-    private func errorMessageAppear(_ error: String) {
-        view.addSubview(errorMessageLabel)
-        errorMessageLabel.text = error
-        
-        if #available(iOS 11.0, *) {
-            errorMessageLabel.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: .init(width: 0, height: 45))
-        } else {
-            errorMessageLabel.layout(top: view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, size: .init(width: 0, height: 45))
+            errorMessageView.layout(top: view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, size: .init(width: 0, height: 45))
         }
     }
     
     @objc private func noResultsLabelDissapear() {
-        noResultsLabel.removeFromSuperview()
+//        noResultsLabel.removeFromSuperview()
         if searchTVSeries.count > 0 {
             searchTVSeries.removeAll()
             tableView.reloadData()
@@ -165,7 +139,7 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
     }
     
     @objc private func errorMessageDissapear() {
-        errorMessageLabel.removeFromSuperview()
+        errorMessageView.removeFromSuperview()
     }
     
     func pushToDetailView(tvId: TVSeries) {
@@ -256,7 +230,7 @@ extension TVSeriesListVC: UISearchBarDelegate {
             getSeries(type: "popular", language: language, page: page)
         }
         
-        noResultsLabel.removeFromSuperview()
+        errorMessageView.isHidden = true
         searchBar.text = nil
         searchBar.setShowsCancelButton(false, animated: true)
         searchBar.resignFirstResponder()
