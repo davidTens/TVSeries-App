@@ -7,25 +7,21 @@
 
 import UIKit
 
-class TVSeriesListCell: UITableViewCell {
+final class TVSeriesListCell: UITableViewCell {
     
-    var tvSeries: TVSeries? {
+    var tvSeries: TVSeries! {
         didSet {
-            
             titleTextView.text = tvSeries?.name
             
-            if let ratingString = tvSeries?.voteAverage {
-                ratingLabel.text = "Rating - \(ratingString)"
-            }
-            
-            if let imageURL = tvSeries?.posterPath {
-                let imageURLFinalPath = "https://image.tmdb.org/t/p/w500/\(imageURL)"
-                customImageView.loadImageUsingCacheWithURL(urlString: imageURLFinalPath)
+            if let rating = tvSeries?.voteAverage, let imageURL = tvSeries?.posterPath {
+                ratingLabel.text = "Rating - \(rating)"
+                let imageURLPath = "https://image.tmdb.org/t/p/w500/\(imageURL)"
+                customImageView.loadImageUsingCacheWithURL(urlString: imageURLPath)
             }
         }
     }
     
-    lazy var customImageView: UIImageView = {
+    private lazy var customImageView: UIImageView = {
         let customImageView = UIImageView()
         customImageView.backgroundColor = UIColor(hexFromString: "#F4F4F4")
         customImageView.layer.masksToBounds = true
@@ -33,7 +29,7 @@ class TVSeriesListCell: UITableViewCell {
         return customImageView
     }()
     
-    lazy var titleTextView: UILabel = {
+    private lazy var titleTextView: UILabel = {
         let titleTextView = UILabel()
         titleTextView.font = UIFont(name: "Avenir Book", size: 20)
         titleTextView.backgroundColor = .clear
@@ -44,7 +40,7 @@ class TVSeriesListCell: UITableViewCell {
     }()
     
     
-    lazy var nextButton: UIButton = {
+    private lazy var nextButton: UIButton = {
         let nextButton = UIButton()
         nextButton.titleLabel?.font = UIFont(name: "Avenir Medium", size: 20)
         nextButton.titleLabel?.textAlignment = .center
@@ -56,7 +52,7 @@ class TVSeriesListCell: UITableViewCell {
         return nextButton
     }()
     
-    lazy var ratingLabel: UILabel = {
+    private lazy var ratingLabel: UILabel = {
         let ratingLabel = UILabel()
         ratingLabel.font = .boldSystemFont(ofSize: 14)
         ratingLabel.textAlignment = .left
@@ -71,22 +67,15 @@ class TVSeriesListCell: UITableViewCell {
     }
     
     private func uiSetUp() {
+        backgroundColor = .clear
         
         [customImageView, titleTextView, ratingLabel, nextButton].forEach( {addSubview($0) })
         
-        if #available(iOS 11.0, *) {
-            customImageView.layout(top: topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: bottomAnchor, trailing: nil, padding: .init(top: 10, left: 15, bottom: 10, right: 0), size: .init(width: 120, height: 0))
-            
-            titleTextView.layout(top: customImageView.topAnchor, leading: customImageView.trailingAnchor, bottom: nil, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 8, bottom: 0, right: 12), size: .init(width: 0, height: 22))
-            
-            nextButton.layout(top: nil, leading: nil, bottom: bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 10, right: 8), size: .init(width: 100, height: 35))
-            
-        } else {
-            customImageView.layout(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: nil, padding: .init(top: 10, left: 15, bottom: 15, right: 0), size: .init(width: 125, height: 0))
-            
-            titleTextView.layout(top: customImageView.topAnchor, leading: customImageView.trailingAnchor, bottom: nil, trailing: trailingAnchor, padding: .init(top: 0, left: 12, bottom: 0, right: 12), size: .init(width: 0, height: 24))
-            nextButton.layout(top: nil, leading: nil, bottom: bottomAnchor, trailing: trailingAnchor, padding: .init(top: 0, left: 0, bottom: 10, right: 0), size: .init(width: 100, height: 35))
-        }
+        customImageView.layout(top: topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: bottomAnchor, trailing: nil, padding: .init(top: 10, left: 15, bottom: 10, right: 0), size: .init(width: 120, height: 0))
+        
+        titleTextView.layout(top: customImageView.topAnchor, leading: customImageView.trailingAnchor, bottom: nil, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 8, bottom: 0, right: 12), size: .init(width: 0, height: 22))
+        
+        nextButton.layout(top: nil, leading: nil, bottom: bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 10, right: 8), size: .init(width: 100, height: 35))
         
         ratingLabel.layout(top: titleTextView.bottomAnchor, leading: titleTextView.leadingAnchor, bottom: nil, trailing: titleTextView.trailingAnchor, padding: .init(top: 8, left: 0, bottom: 0, right: 0), size: .init(width: 0, height: 20))
         

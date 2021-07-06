@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TVSeriesList: Decodable {
+struct TVSeriesGroup: Decodable {
     
     let page: Int
     let results: [TVSeries]
@@ -22,7 +22,7 @@ struct TVSeriesList: Decodable {
     }
 }
 
-struct TVSeries: Decodable {
+struct TVSeries: Decodable, Hashable {
     
     let posterPath: String?
     let popularity: Double

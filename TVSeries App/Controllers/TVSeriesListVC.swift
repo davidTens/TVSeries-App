@@ -15,6 +15,8 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
     private var customRefreshControl = UIRefreshControl()
     private let searchController = UISearchController(searchResultsController: nil)
     
+    private lazy var dataSource = makeDataSource()
+    
     private lazy var page = 1
     private lazy var language = "en-US"
     private lazy var isLoading = false
@@ -27,9 +29,10 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
     
     private var errorMessageView: ErrorView!
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        tableView.dataSource = dataSource
         customRefreshControl.tintColor = dynamicSubColors
         customRefreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         tableView.addSubview(customRefreshControl)
@@ -50,7 +53,7 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         
         searchController.delegate = self
         searchController.searchBar.delegate = self
-        searchController.dimsBackgroundDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
         
         if #available(iOS 11.0, *) {
             navigationItem.hidesSearchBarWhenScrolling = true
@@ -60,7 +63,7 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
         }
     }
     
-    func getSeries(type: StringIntProtocol, language: String, page: Int) {
+    private func getSeries(type: StringIntProtocol, language: String, page: Int) {
         isLoading = true
         customRefreshControl.beginRefreshing()
         
@@ -72,12 +75,15 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
                 switch result {
                 case .success(let list):
                     
-                    self.tvSeries.append(contentsOf: list.results)
+                    print(list.results.count)
+                    
+//                    self.tvSeries.append(contentsOf: list.results)
+                    self.update(with: list)
+                    print("snapshot - \(self.dataSource.snapshot().numberOfItems)")
                     self.errorMessageView.isHidden = true
                     self.tableView.reloadData()
                     
                 case .failure(let error):
-                    print(error.localizedDescription)
                     self.page += 1
                     self.errorMessageView.isHidden = false
                     self.errorMessageView.errorMessageLabel.text = error.rawValue
@@ -131,7 +137,6 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
     }
     
     @objc private func noResultsLabelDissapear() {
-//        noResultsLabel.removeFromSuperview()
         if searchTVSeries.count > 0 {
             searchTVSeries.removeAll()
             tableView.reloadData()
@@ -171,14 +176,6 @@ final class TVSeriesListVC: UITableViewController, UISearchControllerDelegate {
 
 extension TVSeriesListVC: UISearchBarDelegate {
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchController.isActive && searchController.searchBar.text != "" ? searchTVSeries.count : tvSeries.count
-    }
-
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 187
     }
@@ -187,35 +184,18 @@ extension TVSeriesListVC: UISearchBarDelegate {
         if searchController.isActive && searchController.searchBar.text != "" { }
         else {
             if isLoading == false {
-                if indexPath.row + 1 == tvSeries.count {
+                if indexPath.row + 1 == dataSource.snapshot().numberOfItems {
                     page += 1
                     getSeries(type: "popular", language: language, page: page)
+                    print("kaboom")
                 }
             }
         }
     }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId) as! TVSeriesListCell
-        cell.backgroundColor = .clear
-        if searchController.isActive && searchController.searchBar.text != "" {
-            let tvSeriesId = searchTVSeries[indexPath.row]
-            cell.tvSeries = tvSeriesId
-        } else {
-            let tvSeriesId = tvSeries[indexPath.row]
-            cell.tvSeries = tvSeriesId
-        }
-        return cell
-    }
-
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if searchController.isActive && searchController.searchBar.text != "" {
-            let seriesId = searchTVSeries[indexPath.row]
-            pushToDetailView(tvId: seriesId)
-        } else {
-            let seriesId = tvSeries[indexPath.row]
-            pushToDetailView(tvId: seriesId)
-        }
+        guard let serieId = dataSource.itemIdentifier(for: indexPath) else { return }
+        pushToDetailView(tvId: serieId)
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -245,3 +225,27 @@ extension TVSeriesListVC: UISearchBarDelegate {
 
 }
 
+
+private extension TVSeriesListVC {
+    func makeDataSource() -> UITableViewDiffableDataSource<Section, TVSeries> {
+        let id = cellId
+        return UITableViewDiffableDataSource(tableView: tableView) { tableView, indexPath, series in
+            let cell = tableView.dequeueReusableCell(withIdentifier: id) as! TVSeriesListCell
+            cell.tvSeries = self.dataSource.itemIdentifier(for: indexPath)
+            return cell
+        }
+    }
+}
+
+extension TVSeriesListVC {
+    enum Section: CaseIterable {
+        case first
+    }
+    
+    func update(with list: TVSeriesGroup, animate: Bool = true) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, TVSeries>()
+        snapshot.appendSections(Section.allCases)
+        snapshot.appendItems(list.results)
+        dataSource.apply(snapshot, animatingDifferences: animate)
+    }
+}

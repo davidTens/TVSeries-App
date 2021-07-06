@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailCollectionViewCell: UICollectionViewCell {
+final class DetailCollectionViewCell: UICollectionViewCell {
     
     var tvSeriesId: TVSeries? {
         didSet {
@@ -24,7 +24,7 @@ class DetailCollectionViewCell: UICollectionViewCell {
         let customImageView = UIImageView()
         customImageView.backgroundColor = UIColor(hexFromString: "#F4F4F4")
         customImageView.layer.masksToBounds = true
-        customImageView.layer.cornerRadius = 16.0
+        customImageView.layer.cornerRadius = 10.0
         return customImageView
     }()
     

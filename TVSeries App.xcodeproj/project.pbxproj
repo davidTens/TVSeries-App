@@ -34,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0B2DBB8526931CE60012F01A /* TVSeries App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TVSeries App.entitlements"; sourceTree = "<group>"; };
 		751B9BAE2611A252005EA5A2 /* TVSeries App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TVSeries App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		751B9BB12611A252005EA5A2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		751B9BBA2611A254005EA5A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -72,11 +73,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0B2DBB842691C98C0012F01A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				751B9BBA2611A254005EA5A2 /* Assets.xcassets */,
+				751B9BBF2611A254005EA5A2 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		0BB113D1268E330200BDE153 /* Support */ = {
 			isa = PBXGroup;
 			children = (
 				751B9BB12611A252005EA5A2 /* AppDelegate.swift */,
-				751B9BBA2611A254005EA5A2 /* Assets.xcassets */,
 				751B9BBC2611A254005EA5A2 /* LaunchScreen.storyboard */,
 			);
 			path = Support;
@@ -103,25 +112,26 @@
 		751B9BB02611A252005EA5A2 /* TVSeries App */ = {
 			isa = PBXGroup;
 			children = (
+				0B2DBB8526931CE60012F01A /* TVSeries App.entitlements */,
+				0B2DBB842691C98C0012F01A /* Resources */,
 				751B9BE62611A2DA005EA5A2 /* Model */,
 				751B9BE02611A2CF005EA5A2 /* Extensions */,
-				751B9BD82611A2C9005EA5A2 /* CellViews */,
+				751B9BD82611A2C9005EA5A2 /* Views */,
 				751B9BD22611A2BA005EA5A2 /* Networking */,
-				751B9BCA2611A2AB005EA5A2 /* ViewControllers */,
+				751B9BCA2611A2AB005EA5A2 /* Controllers */,
 				0BB113D1268E330200BDE153 /* Support */,
-				751B9BBF2611A254005EA5A2 /* Info.plist */,
 			);
 			path = "TVSeries App";
 			sourceTree = "<group>";
 		};
-		751B9BCA2611A2AB005EA5A2 /* ViewControllers */ = {
+		751B9BCA2611A2AB005EA5A2 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				751B9BCB2611A2AB005EA5A2 /* SplitViewController.swift */,
 				751B9BCC2611A2AB005EA5A2 /* TVSeriesListVC.swift */,
 				751B9BCD2611A2AB005EA5A2 /* SerieDetailVC.swift */,
 			);
-			path = ViewControllers;
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		751B9BD22611A2BA005EA5A2 /* Networking */ = {
@@ -133,14 +143,14 @@
 			path = Networking;
 			sourceTree = "<group>";
 		};
-		751B9BD82611A2C9005EA5A2 /* CellViews */ = {
+		751B9BD82611A2C9005EA5A2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				751B9BD92611A2C9005EA5A2 /* DetailTableViewCell.swift */,
 				751B9BDA2611A2C9005EA5A2 /* TVSeriesListCell.swift */,
 				751B9BDB2611A2C9005EA5A2 /* DetailCollectionViewCell.swift */,
 			);
-			path = CellViews;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		751B9BE02611A2CF005EA5A2 /* Extensions */ = {
@@ -213,7 +223,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					751B9BAD2611A252005EA5A2 = {
 						CreatedOnToolsVersion = 12.4;
@@ -362,7 +372,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				INFOPLIST_FILE = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -417,7 +428,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				INFOPLIST_FILE = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -432,16 +444,22 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "TVSeries App/TVSeries App.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = U94JQYM8K6;
-				INFOPLIST_FILE = "TVSeries App/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				DEVELOPMENT_TEAM = 23RN8Y5H26;
+				INFOPLIST_FILE = "TVSeries App/Resources/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "davdevboo.TVSeries-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -452,16 +470,22 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "TVSeries App/TVSeries App.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = U94JQYM8K6;
-				INFOPLIST_FILE = "TVSeries App/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				DEVELOPMENT_TEAM = 23RN8Y5H26;
+				INFOPLIST_FILE = "TVSeries App/Resources/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "davdevboo.TVSeries-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class NetworkRequest {
+final class NetworkRequest {
     
     static let shared = NetworkRequest()
     private let mainURL = "https://api.themoviedb.org/3"
@@ -15,7 +15,7 @@ class NetworkRequest {
     
     private init() {}
     
-    func getTvSeries(type: StringIntProtocol, tv: String?, similar: String?, search: String?, query: String?, language: String, page: Int, completed: @escaping (Result<TVSeriesList, ErrorHandling>) -> Void) {
+    func getTvSeries(type: StringIntProtocol, tv: String?, similar: String?, search: String?, query: String?, language: String, page: Int, completed: @escaping (Result<TVSeriesGroup, ErrorHandling>) -> Void) {
         
         let finalPath = mainURL + "/\(search ?? "")\(tv ?? "")/\(type)/\(similar ?? "")\(api_key)&language=\(language)&page=\(page)\(query ?? "")"
         
@@ -44,7 +44,7 @@ class NetworkRequest {
             }
             
             do {
-                let seriesList = try JSONDecoder().decode(TVSeriesList.self, from: data)
+                let seriesList = try JSONDecoder().decode(TVSeriesGroup.self, from: data)
                 completed(.success(seriesList))
             }
             catch {

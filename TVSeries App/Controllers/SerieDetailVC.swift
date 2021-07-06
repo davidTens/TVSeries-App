@@ -158,17 +158,9 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
         
         suggestedBackgroundView.addSubview(customCollectionView)
         
-        if #available(iOS 11.0, *) {
-            
-            suggestedTitle.layout(top: suggestedBackgroundView.safeAreaLayoutGuide.topAnchor, leading: suggestedBackgroundView.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 13, left: 13, bottom: 0, right: 0), size: .init(width: 100, height: 22))
-            
-            customCollectionView.layout(top: suggestedTitle.safeAreaLayoutGuide.bottomAnchor, leading: suggestedBackgroundView.safeAreaLayoutGuide.leadingAnchor, bottom: suggestedBackgroundView.safeAreaLayoutGuide.bottomAnchor, trailing: suggestedBackgroundView.safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 5, left: 0, bottom: 0, right: 0))
-        } else {
-            
-            suggestedTitle.layout(top: suggestedBackgroundView.topAnchor, leading: suggestedBackgroundView.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 13, left: 13, bottom: 0, right: 0), size: .init(width: 100, height: 22))
-            
-            customCollectionView.layout(top: suggestedTitle.bottomAnchor, leading: suggestedBackgroundView.leadingAnchor, bottom: suggestedBackgroundView.bottomAnchor, trailing: suggestedBackgroundView.trailingAnchor, padding: .init(top: 5, left: 0, bottom: 0, right: 0))
-        }
+        suggestedTitle.layout(top: suggestedBackgroundView.safeAreaLayoutGuide.topAnchor, leading: suggestedBackgroundView.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 13, left: 13, bottom: 0, right: 0), size: .init(width: 100, height: 22))
+        
+        customCollectionView.layout(top: suggestedTitle.safeAreaLayoutGuide.bottomAnchor, leading: suggestedBackgroundView.safeAreaLayoutGuide.leadingAnchor, bottom: suggestedBackgroundView.safeAreaLayoutGuide.bottomAnchor, trailing: suggestedBackgroundView.safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 5, left: 0, bottom: 0, right: 0))
     }
     
     //  MARK: - collectionView Data Source

@@ -44,14 +44,14 @@ extension UIColor {
     convenience init(hexFromString:String, alpha:CGFloat = 1.0) {
         
         var cString:String = hexFromString.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        var rgbValue:UInt32 = 10066329 //color #999999 if string has wrong format
+        var rgbValue:UInt64 = 10066329 //color #999999 if string has wrong format
         
         if (cString.hasPrefix("#")) {
             cString.remove(at: cString.startIndex)
         }
         
         if ((cString.count) == 6) {
-            Scanner(string: cString).scanHexInt32(&rgbValue)
+            Scanner(string: cString).scanHexInt64(&rgbValue)
         }
         
         self.init(
@@ -83,11 +83,7 @@ let dynamicBackgroundColors = UIColor.white | UIColor(hexFromString: "#37373C")
 extension UIView {
     
     func fillSuperview() {
-        if #available(iOS 11.0, *) {
-            layout(top: superview?.safeAreaLayoutGuide.topAnchor, leading: superview?.safeAreaLayoutGuide.leadingAnchor, bottom: superview?.safeAreaLayoutGuide.bottomAnchor, trailing: superview?.safeAreaLayoutGuide.trailingAnchor)
-        } else {
-            layout(top: superview?.topAnchor, leading: superview?.leadingAnchor, bottom: superview?.bottomAnchor, trailing: superview?.trailingAnchor)
-        }
+        layout(top: superview?.safeAreaLayoutGuide.topAnchor, leading: superview?.safeAreaLayoutGuide.leadingAnchor, bottom: superview?.safeAreaLayoutGuide.bottomAnchor, trailing: superview?.safeAreaLayoutGuide.trailingAnchor)
     }
     
     func layout(top: NSLayoutYAxisAnchor?, leading: NSLayoutXAxisAnchor?, bottom: NSLayoutYAxisAnchor?, trailing: NSLayoutXAxisAnchor?, padding: UIEdgeInsets = .zero, size: CGSize = .zero) {

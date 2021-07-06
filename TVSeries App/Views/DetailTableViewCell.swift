@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailTableViewCell: UITableViewCell {
+final class DetailTableViewCell: UITableViewCell {
     
     lazy var descriptionLabel: UILabel = {
         let descriptionLabel = UILabel()
@@ -36,13 +36,8 @@ class DetailTableViewCell: UITableViewCell {
         addSubview(descriptionLabel)
         addSubview(customTextView)
         
-        if #available(iOS 11.0, *) {
-            descriptionLabel.layout(top: topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 5, left: 6, bottom: 5, right: 6), size: .init(width: 0, height: 20))
-            customTextView.layout(top: descriptionLabel.bottomAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 5, left: 2, bottom: 2, right: 5))
-        } else {
-            descriptionLabel.layout(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, padding: .init(top: 5, left: 6, bottom: 5, right: 6), size: .init(width: 0, height: 20))
-            customTextView.layout(top: descriptionLabel.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: .init(top: 5, left: 2, bottom: 2, right: 5))
-        }
+        descriptionLabel.layout(top: topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 5, left: 6, bottom: 5, right: 6), size: .init(width: 0, height: 20))
+        customTextView.layout(top: descriptionLabel.bottomAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 5, left: 2, bottom: 2, right: 5))
         
     }
     
@@ -61,7 +56,7 @@ public final class ErrorView: UIView {
         errorMessageLabel.isUserInteractionEnabled = true
         errorMessageLabel.font = .boldSystemFont(ofSize: 18)
         errorMessageLabel.textAlignment = .center
-        errorMessageLabel.backgroundColor = #colorLiteral(red: 0.3686189353, green: 0.3664327264, blue: 0.370302707, alpha: 0.9290631023) | #colorLiteral(red: 0.5049917102, green: 0.5019935966, blue: 0.5072988272, alpha: 1)
+        errorMessageLabel.backgroundColor = #colorLiteral(red: 0.5049917102, green: 0.5019935966, blue: 0.5072988272, alpha: 1) | #colorLiteral(red: 0.3686189353, green: 0.3664327264, blue: 0.370302707, alpha: 0.9290631023)
         errorMessageLabel.textColor = .white
         return errorMessageLabel
     }()
