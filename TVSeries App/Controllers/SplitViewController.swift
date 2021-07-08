@@ -13,8 +13,8 @@ final class SplitViewController: UISplitViewController, UISplitViewControllerDel
         super.viewDidLoad()
         delegate = self
         
-        let masterViewController = UINavigationController(rootViewController: TVSeriesListVC())
-        let detailViewController = UINavigationController(rootViewController: SerieDetailVC())
+        let masterViewController = UINavigationController(rootViewController: TVSeriesList())
+        let detailViewController = UINavigationController(rootViewController: SerieDetail())
         
         viewControllers = [masterViewController, detailViewController]
         preferredDisplayMode = .allVisible

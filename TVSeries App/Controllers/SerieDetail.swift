@@ -7,10 +7,21 @@
 
 import UIKit
 
-final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+final class SerieDetail: UITableViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    var tvSerieId: TVSeries?
+    var tvSerieId: TVSeries? {
+        didSet {
+            if let backdropPath = tvSerieId?.backdropPath, let id = tvSerieId?.id {
+                customImageView.loadImageUsingCacheWithURL(urlString: "\(NetworkConstants.backdropPath)/\(backdropPath)")
+                viewModel?.fetchSimilar(serieId: id)
+            }
+        }
+    }
+    
     private var tvResults = [TVSeries]()
+    
+    var viewModel: DetailViewModel!
+    
     private let collCellId = "collectionCellId"
     private let tableCellId = "tableCellId"
     private lazy var absenceOfValue = "Nothing to show"
@@ -55,9 +66,9 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
     private lazy var customImageView: UIImageView = {
         let customImageView = UIImageView()
         customImageView.backgroundColor = .clear
-        if let imageURL = tvSerieId?.backdropPath {
-            customImageView.loadImageUsingCacheWithURL(urlString: "https://image.tmdb.org/t/p/w500/\(imageURL)")
-        }
+//        if let imageURL = tvSerieId?.backdropPath {
+//            customImageView.loadImageUsingCacheWithURL(urlString: "https://image.tmdb.org/t/p/w500/\(imageURL)")
+//        }
         return customImageView
     }()
     
@@ -90,14 +101,23 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: tableCellId)
         
         
-        if let value = tvSerieId {
-            getSeries(type: value.id, similar: "similar", language: "en-US", page: 1)
+        
+        viewModel = DetailViewModel(NetworkRequest.shared)
+        bindViewModel()
+        if let id = tvSerieId?.id {
+            viewModel.fetchSimilar(serieId: id)
         }
     }
     
-    private func pushToDetailView(tvId: TVSeries) {
-        let detailViewController = SerieDetailVC()
-        detailViewController.tvSerieId = tvId
+    private func bindViewModel() {
+        viewModel?.list.bind({ [weak self] _ in
+            self?.customCollectionView.reloadData()
+        })
+    }
+    
+    private func pushToDetailView(tvId: DetailViewModel) {
+        let detailViewController = SerieDetail()
+        detailViewController.viewModel = tvId
         
         if UIDevice.current.userInterfaceIdiom == .pad || deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
             let rootViewController = UINavigationController(rootViewController: detailViewController)
@@ -111,7 +131,7 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
         
         DispatchQueue.global(qos: .userInitiated).async {
             
-            NetworkRequest.shared.getTvSeries(type: type, tv: "tv", similar: similar, search: nil, query: nil, language: language, page: page) { [weak self] result in
+            NetworkRequest.shared.fetchSeries(type: type, tv: "tv", similar: similar, search: nil, query: nil, language: language, page: page) { [weak self] result in
                 guard let self = self else { return }
                 
                 DispatchQueue.main.async {
@@ -166,18 +186,18 @@ final class SerieDetailVC: UITableViewController, UICollectionViewDelegate, UICo
     //  MARK: - collectionView Data Source
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return tvResults.count
+        return viewModel.list.value.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collCellId, for: indexPath) as! DetailCollectionViewCell
-        cell.tvSeriesId = tvResults[indexPath.row]
+        cell.configure(viewModel.list.value[indexPath.row])
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let resultsId = tvResults[indexPath.row]
-        pushToDetailView(tvId: resultsId)
+        let resultsId = viewModel.list.value[indexPath.row]
+        print(resultsId.name)
     }
     
     // MARK: - tableView Data Source

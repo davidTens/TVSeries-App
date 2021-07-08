@@ -9,16 +9,16 @@ import Foundation
 
 final class NetworkRequest {
     
-    static let shared = NetworkRequest()
+    public static let shared = NetworkRequest()
     private let mainURL = "https://api.themoviedb.org/3"
-    private let api_key = "?api_key=7481bbcf1fcb56bd957cfe9af78205f3"
+    private let apiKey = "?api_key=7481bbcf1fcb56bd957cfe9af78205f3"
     
     private init() {}
     
-    func getTvSeries(type: StringIntProtocol, tv: String?, similar: String?, search: String?, query: String?, language: String, page: Int, completed: @escaping (Result<TVSeriesGroup, ErrorHandling>) -> Void) {
+    func fetchSeries(type: StringIntProtocol, tv: String?, similar: String?, search: String?, query: String?, language: String, page: Int, completed: @escaping (Result<TVSeriesGroup, ErrorHandling>) -> Void) {
         
-        let finalPath = mainURL + "/\(search ?? "")\(tv ?? "")/\(type)/\(similar ?? "")\(api_key)&language=\(language)&page=\(page)\(query ?? "")"
-        
+        let finalPath = mainURL + "/\(search ?? "")\(tv ?? "")/\(type)/\(similar ?? "")\(apiKey)&language=\(language)&page=\(page)\(query ?? "")"
+        print(finalPath)
         guard let url = URL(string: finalPath)
         else {
             return completed(.failure(.apiError))
@@ -52,5 +52,23 @@ final class NetworkRequest {
             }
         }
         task.resume()
+    }
+}
+
+
+enum Endpoint: String, CustomStringConvertible, CaseIterable {
+    case popular
+    
+    var description: String {
+        switch self {
+        case .popular: return "Popular"
+        }
+    }
+    
+    init?(index: Int) {
+        switch index {
+        case 0: self = .popular
+        default: return nil
+        }
     }
 }

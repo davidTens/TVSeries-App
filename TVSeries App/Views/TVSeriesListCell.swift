@@ -11,13 +11,13 @@ final class TVSeriesListCell: UITableViewCell {
     
     var tvSeries: TVSeries! {
         didSet {
-            titleTextView.text = tvSeries?.name
-            
-            if let rating = tvSeries?.voteAverage, let imageURL = tvSeries?.posterPath {
-                ratingLabel.text = "Rating - \(rating)"
-                let imageURLPath = "https://image.tmdb.org/t/p/w500/\(imageURL)"
-                customImageView.loadImageUsingCacheWithURL(urlString: imageURLPath)
-            }
+//            titleTextView.text = tvSeries?.name
+//
+//            if let rating = tvSeries?.voteAverage, let imageURL = tvSeries?.posterPath {
+//                ratingLabel.text = "Rating - \(rating)"
+//                let imageURLPath = "https://image.tmdb.org/t/p/w500/\(imageURL)"
+//                customImageView.loadImageUsingCacheWithURL(urlString: imageURLPath)
+//            }
         }
     }
     
@@ -63,7 +63,12 @@ final class TVSeriesListCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         uiSetUp()
-        
+    }
+    
+    func configure(_ viewModel: ItemViewModel) {
+        titleTextView.text = viewModel.name
+        ratingLabel.text = viewModel.rating
+        customImageView.loadImageUsingCacheWithURL(urlString: viewModel.imageURLPath)
     }
     
     private func uiSetUp() {

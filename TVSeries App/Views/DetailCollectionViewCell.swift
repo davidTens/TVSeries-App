@@ -9,17 +9,6 @@ import UIKit
 
 final class DetailCollectionViewCell: UICollectionViewCell {
     
-    var tvSeriesId: TVSeries? {
-        didSet {
-            titleLabel.text = tvSeriesId?.name
-            
-            if let imageURL = tvSeriesId?.posterPath {
-                let imageURLFinalPath = "https://image.tmdb.org/t/p/w500/\(imageURL)"
-                customImageView.loadImageUsingCacheWithURL(urlString: imageURLFinalPath)
-            }
-        }
-    }
-    
     lazy var customImageView: UIImageView = {
         let customImageView = UIImageView()
         customImageView.backgroundColor = UIColor(hexFromString: "#F4F4F4")
@@ -40,6 +29,11 @@ final class DetailCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         ui()
+    }
+    
+    func configure(_ viewModel: ItemViewModel) {
+        titleLabel.text = viewModel.name
+        customImageView.loadImageUsingCacheWithURL(urlString: viewModel.imageURLPath)
     }
     
     private func ui() {
