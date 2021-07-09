@@ -9,17 +9,7 @@ import UIKit
 
 final class TVSeriesListCell: UITableViewCell {
     
-    var tvSeries: TVSeries! {
-        didSet {
-//            titleTextView.text = tvSeries?.name
-//
-//            if let rating = tvSeries?.voteAverage, let imageURL = tvSeries?.posterPath {
-//                ratingLabel.text = "Rating - \(rating)"
-//                let imageURLPath = "https://image.tmdb.org/t/p/w500/\(imageURL)"
-//                customImageView.loadImageUsingCacheWithURL(urlString: imageURLPath)
-//            }
-        }
-    }
+    var tvSeries: TVSeries!
     
     private lazy var customImageView: UIImageView = {
         let customImageView = UIImageView()
@@ -35,7 +25,7 @@ final class TVSeriesListCell: UITableViewCell {
         titleTextView.backgroundColor = .clear
         titleTextView.textAlignment = .left
         titleTextView.adjustsFontSizeToFitWidth = true
-        titleTextView.textColor = dynamicSubColors
+        titleTextView.textColor = Constants.dynamicSubColors
         return titleTextView
     }()
     

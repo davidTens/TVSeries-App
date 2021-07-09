@@ -9,27 +9,28 @@ import Foundation
 
 final class DetailViewModel {
     
-    private var api: NetworkRequest?
+    private var api: APICall?
+    var delegate: Navigator?
     
     lazy var page = 1
     private lazy var language = "en-US"
-    private (set) var list: Bindable<[ItemViewModel]> = Bindable([])
+    private (set) var response: Bindable<[ItemViewModel]> = Bindable([])
     
-    init(_ api: NetworkRequest) {
+    init(_ api: APICall) {
         self.api = api
     }
     
     func fetchSimilar(serieId: Int) {
-        let adapter = SeriesAdapter(api: NetworkRequest.shared) { [weak self] in
-            self?.select(series: $0)
+        let adapter = SeriesAdapter(api: APICall.shared) { [weak self] in
+            self?.select(serie: $0)
         }
-        adapter.fetchSeries(type: serieId, tv: "tv", similar: "similar", search: nil, query: nil, language: language, page: page, completed: handleApiResults(_:))
+        adapter.fetchSeries(endpoint: "/tv/\(String(serieId))/similar", language: language, page: page, query: nil, completion: handleApiResults(_:))
     }
     
     private func handleApiResults(_ results: Result<[ItemViewModel], ErrorHandling>) {
         switch results {
         case .success(let list):
-            self.list.value.append(contentsOf: list)
+            response.value.append(contentsOf: list)
         case .failure(let error):
             print(error)
         }
@@ -37,7 +38,7 @@ final class DetailViewModel {
 }
 
 extension DetailViewModel {
-    private func select(series: TVSeries) {
-        print(series.name)
+    private func select(serie: TVSeries) {
+        delegate?.navigate(to: serie)
     }
 }

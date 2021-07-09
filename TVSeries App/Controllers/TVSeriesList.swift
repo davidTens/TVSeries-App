@@ -7,42 +7,21 @@
 
 import UIKit
 
-protocol Navigator {
-    func navigate(_ id: TVSeries)
-}
-
-final class TVSeriesList: UITableViewController, UISearchControllerDelegate, Navigator {
+final class TVSeriesList: UITableViewController {
     
     private let cellId = "cellId"
-    private var customRefreshControl = UIRefreshControl()
-    private let searchController = UISearchController(searchResultsController: nil)
-    
-//    private lazy var dataSource = makeDataSource()
-    
     private var viewModel: SeriesViewModel!
     private var searchViewModel: SearchViewModel!
-    private var api: APIService?
     
-    private lazy var deviceModelId = [
-        "iPhone 6 Plus",
-        "iPhone 6s Plus",
-        "iPhone 7 Plus",
-        "iPhone 8 Plus"
-    ]
-    
+    private var customRefreshControl = UIRefreshControl()
+    private let searchController = UISearchController(searchResultsController: nil)
     private var errorMessageView: ErrorView!
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        tableView.dataSource = dataSource
-        uiStaff()
-        errorMessageAppear()
-        
-        
-        
-        viewModel = SeriesViewModel(NetworkRequest.shared)
-        searchViewModel = SearchViewModel(NetworkRequest.shared)
+        interfaceSetUp()
+        viewModel = SeriesViewModel(APICall.shared)
+        searchViewModel = SearchViewModel(APICall.shared)
         viewModel.delegate = self
         searchViewModel.delegate = self
         bindViewModel()
@@ -50,111 +29,96 @@ final class TVSeriesList: UITableViewController, UISearchControllerDelegate, Nav
         viewModel?.fetchSeries()
     }
     
-    private func uiStaff() {
-        customRefreshControl.tintColor = dynamicSubColors
+    private func interfaceSetUp() {
+        navigationItem.title = "Home"
+        view.backgroundColor = Constants.dynamicBackgroundColors
+        navigationController?.navigationBar.tintColor = Constants.dynamicSubColors
+        
+        customRefreshControl.tintColor = Constants.dynamicSubColors
         customRefreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         tableView.addSubview(customRefreshControl)
         
-        navigationItem.title = "TV Series"
-        view.backgroundColor = dynamicBackgroundColors
-        navigationController?.navigationBar.tintColor = dynamicSubColors
-        
-        searchControllerSetUp()
-        
         tableView.register(TVSeriesListCell.self, forCellReuseIdentifier: cellId)
         tableView.separatorStyle = .none
-    }
-    
-    private func bindViewModel() {
-        viewModel.list.bind { [weak self] _ in
-            self?.tableView.reloadData()
-            self?.customRefreshControl.endRefreshing()
-        }
-        searchViewModel.list.bind { [weak self] value in
-            self?.tableView.reloadData()
-            self?.customRefreshControl.endRefreshing()
-        }
-    }
-    
-    func navigate(_ id: TVSeries) {
-        pushToDetailView(tvId: id)
-    }
-    
-    fileprivate func searchControllerSetUp() {
+        
+        errorMessageView = ErrorView()
+        errorMessageView.isHidden = true
+        view.addSubview(errorMessageView)
+        errorMessageView.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: .init(width: 0, height: 45))
         
         searchController.delegate = self
         searchController.searchBar.delegate = self
         searchController.obscuresBackgroundDuringPresentation = false
-        
-        if #available(iOS 11.0, *) {
-            navigationItem.hidesSearchBarWhenScrolling = true
-            navigationItem.searchController = searchController
-        } else {
-            navigationItem.titleView = searchController.searchBar
+        navigationItem.hidesSearchBarWhenScrolling = true
+        navigationItem.searchController = searchController
+    }
+    
+    private func bindViewModel() {
+        viewModel.response.bind { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+                self?.customRefreshControl.endRefreshing()
+            }
+        }
+        searchViewModel.response.bind { [weak self] value in
+            DispatchQueue.main.async {
+                self?.errorMessageView.isHidden = true
+                self?.tableView.reloadData()
+                self?.customRefreshControl.endRefreshing()
+            }
+        }
+        searchViewModel.serviceState.bind { [weak self] state in
+            DispatchQueue.main.async {
+                switch state {
+                case .error(_):
+                    self?.errorMessageView.isHidden = false
+                    self?.errorMessageView.errorMessageLabel.text = "No results"
+                case .loading, .finished:
+                    break
+                }
+            }
         }
     }
     
-    private func errorMessageAppear() {
-        errorMessageView = ErrorView()
-        errorMessageView.isHidden = true
-        view.addSubview(errorMessageView)
-        
-        if #available(iOS 11.0, *) {
-            errorMessageView.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: .init(width: 0, height: 45))
-        } else {
-            errorMessageView.layout(top: view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, size: .init(width: 0, height: 45))
-        }
-    }
-    
-    @objc private func noResultsLabelDissapear() {
-        if searchViewModel.list.value.count > 0 {
-            searchViewModel.list.value.removeAll()
-            tableView.reloadData()
-        }
-    }
-    
-    @objc private func errorMessageDissapear() {
-        errorMessageView.removeFromSuperview()
-    }
-    
-    func pushToDetailView(tvId: TVSeries) {
-        let detailViewController = SerieDetail()
-        detailViewController.tvSerieId = tvId
-        
-        if UIDevice.current.userInterfaceIdiom == .pad || deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
-            let rootViewController = UINavigationController(rootViewController: detailViewController)
-            showDetailViewController(rootViewController, sender: self)
-        } else {
-            navigationController?.pushViewController(detailViewController, animated: true)
-        }
-    }
-    
-    @objc func refresh() {
+    @objc private func refresh() {
         customRefreshControl.endRefreshing()
+        viewModel.refresh()
     }
     
-    func searchTextChanged(query: String?) {
-        if viewModel.list.value.count > 0 || searchViewModel.list.value.count > 0 {
-            viewModel.list.value.removeAll()
-            searchViewModel.list.value.removeAll()
-            tableView.reloadData()
+    private func searchTextChanged(query: String?) {
+        if viewModel.response.value.count > 0 || searchViewModel.response.value.count > 0 {
+            viewModel.response.value.removeAll()
+            searchViewModel.response.value.removeAll()
         }
         searchViewModel?.searchSeries(query: query!)
-        tableView.reloadData()
     }
     
 }
 
 // MARK: - EXTENSIONS
 
-extension TVSeriesList: UISearchBarDelegate {
+extension TVSeriesList: Navigator {
+    func navigate(to id: TVSeries) {
+        let detailViewController = SerieDetail()
+        detailViewController.tvSerieId = id
+        
+        if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
+            let rootViewController = UINavigationController(rootViewController: detailViewController)
+            showDetailViewController(rootViewController, sender: self)
+        } else {
+            navigationController?.pushViewController(detailViewController, animated: true)
+        }
+    }
+}
+
+extension TVSeriesList: UISearchControllerDelegate, UISearchBarDelegate {
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchController.isActive && searchController.searchBar.text != "" ? searchViewModel.list.value.count : viewModel.list.value.count
+        return searchController.isActive && searchController.searchBar.text != "" ? searchViewModel.response.value.count : viewModel.response.value.count
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -162,41 +126,33 @@ extension TVSeriesList: UISearchBarDelegate {
     }
 
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if searchController.isActive && searchController.searchBar.text != "" {
-            if indexPath.row + 1 == searchViewModel.list.value.count {
-            searchViewModel.page += 1
-            searchViewModel.searchSeries(query: searchController.searchBar.text!)
+        if searchController.isActive && searchController.searchBar.text != "" { }
+        else {
+            if indexPath.row + 1 == viewModel.response.value.count && viewModel.serviceState.value != .loading {
+                viewModel.page += 1
+                viewModel.fetchSeries()
             }
         }
-        else {
-            if indexPath.row + 1 == viewModel.list.value.count {
-            viewModel.page += 1
-            viewModel.fetchSeries()
-                
-        }
     }
-}
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId) as! TVSeriesListCell
-                cell.backgroundColor = .clear
-                if searchController.isActive && searchController.searchBar.text != "" {
-                    let series = searchViewModel.list.value[indexPath.row]
-                    cell.configure(series)
-                } else {
-                    let series = viewModel.list.value[indexPath.row]
-                    cell.configure(series)
-                }
-                return cell
+        if searchController.isActive && searchController.searchBar.text != "" {
+            let id = searchViewModel.response.value[indexPath.row]
+            cell.configure(id)
+        } else {
+            let id = viewModel.response.value[indexPath.row]
+            cell.configure(id)
+        }
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        guard let serieId = dataSource.itemIdentifier(for: indexPath) else { return }
         if searchController.isActive && searchController.searchBar.text != "" {
-            let serie = searchViewModel.list.value[indexPath.row]
+            let serie = searchViewModel.response.value[indexPath.row]
             serie.select()
         } else {
-            let item = viewModel.list.value[indexPath.row]
+            let item = viewModel.response.value[indexPath.row]
             item.select()
         }
     }
@@ -206,11 +162,10 @@ extension TVSeriesList: UISearchBarDelegate {
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        if searchViewModel.list.value.count >= 0 {
-            searchViewModel.list.value.removeAll()
+        if searchViewModel.response.value.count >= 0 {
+            searchViewModel.response.value.removeAll()
             tableView.reloadData()
-//            page = 1
-//            getSeries(type: "popular", language: language, page: page)
+            viewModel.page = 1
             viewModel.fetchSeries()
         }
         
@@ -228,15 +183,6 @@ extension TVSeriesList: UISearchBarDelegate {
     }
 
 }
-
-extension UIViewController {
-    func select(series: TVSeries) {
-        let detailController = SerieDetail()
-        detailController.tvSerieId = series
-        navigationController?.pushViewController(detailController, animated: true)
-    }
-}
-
 
 //private extension TVSeriesListVC {
 //    func makeDataSource() -> UITableViewDiffableDataSource<Section, TVSeries> {

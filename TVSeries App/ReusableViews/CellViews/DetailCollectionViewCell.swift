@@ -21,7 +21,7 @@ final class DetailCollectionViewCell: UICollectionViewCell {
         let titleLabel = UILabel()
         titleLabel.font = .boldSystemFont(ofSize: 16)
         titleLabel.textAlignment = .left
-        titleLabel.textColor = dynamicSubColors
+        titleLabel.textColor = Constants.dynamicSubColors
         titleLabel.adjustsFontSizeToFitWidth = true
         return titleLabel
     }()

@@ -76,9 +76,6 @@ public extension UIColor {
     }
 }
 
-let dynamicSubColors = UIColor.black | UIColor.white
-let dynamicBackgroundColors = UIColor.white | UIColor(hexFromString: "#37373C")
-
 
 extension UIView {
     
@@ -199,4 +196,12 @@ public extension UIDevice {
         default:                                        return identifier
         }
     }
+}
+
+
+
+enum FetchingServiceState: Equatable {
+    case finished
+    case loading
+    case error(String)
 }

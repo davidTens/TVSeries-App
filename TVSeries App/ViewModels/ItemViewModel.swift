@@ -23,14 +23,6 @@ struct ItemViewModel {
         return "https://image.tmdb.org/t/p/w500/\(series.posterPath ?? "")"
     }
     
-    var id: Int {
-        return series.id
-    }
-    
-    var overview: String {
-        return series.overview
-    }
-    
     let select: () -> Void
     
     init(_ item: TVSeries, selection: @escaping () -> Void) {

@@ -18,8 +18,6 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
         }
     }
     
-    private var tvResults = [TVSeries]()
-    
     var viewModel: DetailViewModel!
     
     private let collCellId = "collectionCellId"
@@ -27,21 +25,6 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
     private lazy var absenceOfValue = "Nothing to show"
     private lazy var flowLayot = UICollectionViewFlowLayout()
     private let suggestedTitle = UILabel()
-    
-    private lazy var descriptionData = [
-        "Overview",
-        "Name",
-        "First Air",
-        "Countries",
-        "Language"
-    ]
-    
-    private lazy var deviceModelId = [
-        "iPhone 6 Plus",
-        "iPhone 6s Plus",
-        "iPhone 7 Plus",
-        "iPhone 8 Plus"
-    ]
     
     private lazy var listOfDataToShow = [
         tvSerieId?.overview ?? absenceOfValue,
@@ -51,14 +34,14 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
         tvSerieId?.originalLanguage ?? absenceOfValue
     ]
     
-    deinit { print("OS reclaiming memory for DetailVC - No Ratain Cycle/Leak!") }
+    deinit { print("OS reclaiming memory for DetailController - No Ratain Cycle/Leak!") }
     
     private lazy var noImageLabel: UILabel = {
         let noImageLabel = UILabel()
         noImageLabel.font = .boldSystemFont(ofSize: 17)
         noImageLabel.textAlignment = .center
         noImageLabel.backgroundColor = .clear
-        noImageLabel.textColor = dynamicSubColors
+        noImageLabel.textColor = Constants.dynamicSubColors
         noImageLabel.text = "No image"
         return noImageLabel
     }()
@@ -66,9 +49,6 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
     private lazy var customImageView: UIImageView = {
         let customImageView = UIImageView()
         customImageView.backgroundColor = .clear
-//        if let imageURL = tvSerieId?.backdropPath {
-//            customImageView.loadImageUsingCacheWithURL(urlString: "https://image.tmdb.org/t/p/w500/\(imageURL)")
-//        }
         return customImageView
     }()
     
@@ -97,56 +77,29 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
         
         navigationItem.title = tvSerieId?.name
         tableView.separatorStyle = .none
-        view.backgroundColor = dynamicBackgroundColors
+        view.backgroundColor = Constants.dynamicBackgroundColors
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: tableCellId)
         
         
-        
-        viewModel = DetailViewModel(NetworkRequest.shared)
+        viewModel = DetailViewModel(APICall.shared)
+        viewModel.delegate = self
         bindViewModel()
         if let id = tvSerieId?.id {
             viewModel.fetchSimilar(serieId: id)
         }
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        viewModel.delegate = nil
+    }
+    
     private func bindViewModel() {
-        viewModel?.list.bind({ [weak self] _ in
-            self?.customCollectionView.reloadData()
-        })
-    }
-    
-    private func pushToDetailView(tvId: DetailViewModel) {
-        let detailViewController = SerieDetail()
-        detailViewController.viewModel = tvId
-        
-        if UIDevice.current.userInterfaceIdiom == .pad || deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
-            let rootViewController = UINavigationController(rootViewController: detailViewController)
-            showDetailViewController(rootViewController, sender: self)
-        } else {
-            navigationController?.pushViewController(detailViewController, animated: true)
-        }
-    }
-    
-    private func getSeries(type: StringIntProtocol, similar: String, language: String, page: Int) {
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            
-            NetworkRequest.shared.fetchSeries(type: type, tv: "tv", similar: similar, search: nil, query: nil, language: language, page: page) { [weak self] result in
-                guard let self = self else { return }
-                
-                DispatchQueue.main.async {
-                    
-                    switch result {
-                    case .success(let list):
-                        self.tvResults.append(contentsOf: list.results)
-                        self.customCollectionView.reloadData()
-                    case .failure(let error):
-                        self.suggestedTitle.text = "No suggestions to show"
-                        print(error)
-                    }
-                }
+        viewModel?.response.bind({ [weak self] _ in
+            DispatchQueue.main.async {
+                self?.customCollectionView.reloadData()
             }
-        }
+        })
     }
     
     private func headerSetUp(header: UIView) {
@@ -171,7 +124,7 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
         
         suggestedTitle.font = .boldSystemFont(ofSize: 20)
         suggestedTitle.textAlignment = .left
-        suggestedTitle.textColor = dynamicSubColors
+        suggestedTitle.textColor = Constants.dynamicSubColors
         suggestedTitle.text = "Suggested"
         
         suggestedBackgroundView.addSubview(suggestedTitle)
@@ -186,18 +139,18 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
     //  MARK: - collectionView Data Source
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.list.value.count
+        return viewModel.response.value.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collCellId, for: indexPath) as! DetailCollectionViewCell
-        cell.configure(viewModel.list.value[indexPath.row])
+        cell.configure(viewModel.response.value[indexPath.row])
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let resultsId = viewModel.list.value[indexPath.row]
-        print(resultsId.name)
+        let resultsId = viewModel.response.value[indexPath.row]
+        resultsId.select()
     }
     
     // MARK: - tableView Data Source
@@ -220,13 +173,13 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: tableCellId, for: indexPath) as! DetailTableViewCell
-        cell.backgroundColor = dynamicBackgroundColors
+        cell.backgroundColor = Constants.dynamicBackgroundColors
         let highlighedColor = UIView()
         highlighedColor.backgroundColor = .clear
         cell.selectedBackgroundView = highlighedColor
         
         cell.customTextView.text = listOfDataToShow[indexPath.row]
-        cell.descriptionLabel.text = descriptionData[indexPath.row]
+        cell.descriptionLabel.text = Constants.descriptionData[indexPath.row]
         return cell
     }
     
@@ -237,4 +190,18 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
         return section == 0 ? headerSecOne : suggestedBackgroundView
     }
     
+}
+
+extension SerieDetail: Navigator {
+    func navigate(to id: TVSeries) {
+        let detailViewController = SerieDetail()
+        detailViewController.tvSerieId = id
+        
+        if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
+            let rootViewController = UINavigationController(rootViewController: detailViewController)
+            showDetailViewController(rootViewController, sender: self)
+        } else {
+            navigationController?.pushViewController(detailViewController, animated: true)
+        }
+    }
 }
