@@ -2,19 +2,19 @@
 //  Constants.swift
 //  TVSeries App
 //
-//  Created by Daviti Tsveniashvili on 7/9/21.
+//  Created by David T on 7/9/21.
 //
 
 import UIKit
 
-struct Constants {
+public struct Constants {
     static let dynamicSubColors = UIColor.black | UIColor.white
     static let dynamicBackgroundColors = UIColor.white | UIColor(hexFromString: "#37373C")
     static let deviceModelId = ["iPhone 6 Plus", "iPhone 6s Plus", "iPhone 7 Plus", "iPhone 8 Plus"]
     static let descriptionData = ["Overview", "Name", "First Air", "Countries", "Language"]
 }
 
-struct NetworkConstants {
+public struct NetworkConstants {
     static let baseURL = "https://api.themoviedb.org/3"
     static let apiKey = "7481bbcf1fcb56bd957cfe9af78205f3"
     static let popularTVSeries = "/tv/popular/"

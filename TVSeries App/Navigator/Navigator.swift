@@ -10,3 +10,7 @@ import Foundation
 protocol Navigator {
     func navigate(to id: TVSeries)
 }
+
+protocol SelectionValue {
+    func selectionDidChangeValue(to option: String)
+}

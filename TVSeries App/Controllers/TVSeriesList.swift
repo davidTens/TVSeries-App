@@ -16,6 +16,11 @@ final class TVSeriesList: UITableViewController {
     private var customRefreshControl = UIRefreshControl()
     private let searchController = UISearchController(searchResultsController: nil)
     private var errorMessageView: ErrorView!
+    private lazy var horizontalSelectionView: HorizontalSelectionView = {
+        let horizontalSelectionView = HorizontalSelectionView()
+        horizontalSelectionView.delegate = self
+        return horizontalSelectionView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +56,7 @@ final class TVSeriesList: UITableViewController {
         searchController.obscuresBackgroundDuringPresentation = false
         navigationItem.hidesSearchBarWhenScrolling = true
         navigationItem.searchController = searchController
+        searchController.searchBar.backgroundImage = UIImage()
     }
     
     private func bindViewModel() {
@@ -93,11 +99,29 @@ final class TVSeriesList: UITableViewController {
         searchViewModel?.searchSeries(query: query!)
     }
     
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let yPosition = scrollView.contentOffset.y
+        if yPosition != 90 && yPosition != -44 && yPosition > -44 {
+            // do something
+        }
+        
+        if scrollView == tableView {
+            if tableView.rectForHeader(inSection: 0).origin.y <= tableView.contentOffset.y + CGFloat(50.0) && tableView.rectForHeader(inSection: 0).origin.y <= tableView.contentOffset.y + CGFloat(50.0) {
+//                navigationController?.navigationBar.tintColor = Constants.dynamicBackgroundColors
+//                navigationController?.navigationBar.isTranslucent = false
+            }
+        }
+    }
+    
 }
 
 // MARK: - EXTENSIONS
 
-extension TVSeriesList: Navigator {
+extension TVSeriesList: Navigator, SelectionValue {
+    func selectionDidChangeValue(to option: String) {
+        print(option)
+    }
+    
     func navigate(to id: TVSeries) {
         let detailViewController = SerieDetail()
         detailViewController.tvSerieId = id
@@ -123,6 +147,14 @@ extension TVSeriesList: UISearchControllerDelegate, UISearchBarDelegate {
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 187
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return horizontalSelectionView
     }
 
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
