@@ -164,7 +164,12 @@ extension HomeController: UISearchControllerDelegate, UISearchBarDelegate {
             if indexPath.row + 1 == viewModel.response.value.count && viewModel.serviceState.value != .loading {
                 
                 viewModel.page += 1
-                viewModel.fetchSeries()
+                
+                if viewModel.optionSelected == false {
+                    viewModel.fetchSeries()
+                } else if viewModel.optionSelected == true {
+                    viewModel.fetchMovies()
+                }
             }
         }
     }

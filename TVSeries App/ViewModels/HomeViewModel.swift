@@ -14,6 +14,7 @@ final class HomeViewModel {
     var delegate: Navigator?
     
     lazy var page = 1
+    lazy var optionSelected = Bool()
     private lazy var language = "en-US"
     private (set) var response: Bindable<[ItemViewModel]> = Bindable([])
     private (set) var serviceState: Bindable<FetchingServiceState> = Bindable(.loading)
@@ -31,18 +32,20 @@ final class HomeViewModel {
     }
     
     func fetchSelectedOption(moviesSelected: Bool) {
+        optionSelected = moviesSelected
+        
         if moviesSelected == false {
             if response.value.count == 0 {
                 fetchSeries()
-            } else {
-                page += 1
+            } else if response.value.count > 0 {
+                response.value.removeAll()
+                page = 1
                 fetchSeries()
             }
         } else {
-            if response.value.count == 0 {
-                fetchMovies()
-            } else {
-                page += 1
+            if response.value.count > 0 {
+                response.value.removeAll()
+                page = 1
                 fetchMovies()
             }
         }

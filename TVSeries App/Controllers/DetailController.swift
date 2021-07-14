@@ -15,6 +15,11 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
                 navigationItem.title = name
                 customImageView.loadImageUsingCacheWithURL(urlString: "\(NetworkConstants.posterPath)/\(backdropPath)")
             }
+            listOfDataToShow.append(tvSerieId?.overview ?? absenceOfValue)
+            listOfDataToShow.append(tvSerieId?.originalName ?? absenceOfValue)
+            listOfDataToShow.append(tvSerieId?.firstAirDate ?? absenceOfValue)
+            listOfDataToShow.append(tvSerieId?.originCountry.first ?? absenceOfValue)
+            listOfDataToShow.append(tvSerieId?.originalLanguage ?? absenceOfValue)
         }
     }
     
@@ -24,6 +29,11 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
                 navigationItem.title = title
                 customImageView.loadImageUsingCacheWithURL(urlString: "\(NetworkConstants.posterPath)/\(backdropPath)")
             }
+            listOfDataToShow.append(movieId?.overview ?? absenceOfValue)
+            listOfDataToShow.append(movieId?.originalTitle ?? absenceOfValue)
+            listOfDataToShow.append(movieId?.releaseDate ?? absenceOfValue)
+            listOfDataToShow.append(absenceOfValue)
+            listOfDataToShow.append(movieId?.originalLanguage ?? absenceOfValue)
         }
     }
     
@@ -35,13 +45,7 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     private lazy var flowLayot = UICollectionViewFlowLayout()
     private let suggestedTitle = UILabel()
     
-    private lazy var listOfDataToShow = [
-        movieId?.overview ?? absenceOfValue,
-        movieId?.originalTitle ?? absenceOfValue,
-        movieId?.releaseDate ?? absenceOfValue,
-//
-        movieId?.originalLanguage ?? absenceOfValue
-    ]
+    private lazy var listOfDataToShow = [String]()
     
     deinit { print("OS reclaiming memory for DetailController - No Ratain Cycle/Leak!") }
     
