@@ -7,13 +7,22 @@
 
 import UIKit
 
-final class SerieDetail: UITableViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+final class DetailController: UITableViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
     var tvSerieId: TVSeries? {
         didSet {
-            if let backdropPath = tvSerieId?.backdropPath, let id = tvSerieId?.id {
-                customImageView.loadImageUsingCacheWithURL(urlString: "\(NetworkConstants.backdropPath)/\(backdropPath)")
-                viewModel?.fetchSimilar(serieId: id)
+            if let backdropPath = tvSerieId?.backdropPath, let name = tvSerieId?.originalName {
+                navigationItem.title = name
+                customImageView.loadImageUsingCacheWithURL(urlString: "\(NetworkConstants.posterPath)/\(backdropPath)")
+            }
+        }
+    }
+    
+    var movieId: Movie? {
+        didSet {
+            if let backdropPath = movieId?.backdropPath, let title = movieId?.originalTitle {
+                navigationItem.title = title
+                customImageView.loadImageUsingCacheWithURL(urlString: "\(NetworkConstants.posterPath)/\(backdropPath)")
             }
         }
     }
@@ -27,11 +36,11 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
     private let suggestedTitle = UILabel()
     
     private lazy var listOfDataToShow = [
-        tvSerieId?.overview ?? absenceOfValue,
-        tvSerieId?.originalName ?? absenceOfValue,
-        tvSerieId?.firstAirDate ?? absenceOfValue,
-        tvSerieId?.originCountry.first ?? absenceOfValue,
-        tvSerieId?.originalLanguage ?? absenceOfValue
+        movieId?.overview ?? absenceOfValue,
+        movieId?.originalTitle ?? absenceOfValue,
+        movieId?.releaseDate ?? absenceOfValue,
+//
+        movieId?.originalLanguage ?? absenceOfValue
     ]
     
     deinit { print("OS reclaiming memory for DetailController - No Ratain Cycle/Leak!") }
@@ -74,18 +83,21 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationItem.title = tvSerieId?.name
         tableView.separatorStyle = .none
         view.backgroundColor = Constants.dynamicBackgroundColors
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: tableCellId)
         
         
-        viewModel = DetailViewModel(APICall.shared)
+        viewModel = DetailViewModel(TVSeriesAPI.shared)
         viewModel.delegate = self
         bindViewModel()
         if let id = tvSerieId?.id {
-            viewModel.fetchSimilar(serieId: id)
+            viewModel.fetchSimilarSerie(serieId: id)
+            print("series")
+        }
+        if let id = movieId?.id {
+            viewModel.fetchSimilarMovie(movieId: id)
+            print("movies")
         }
     }
     
@@ -192,9 +204,21 @@ final class SerieDetail: UITableViewController, UICollectionViewDelegate, UIColl
     
 }
 
-extension SerieDetail: Navigator {
+extension DetailController: Navigator {
+    func navigate(to id: Movie) {
+        let detailViewController = DetailController()
+        detailViewController.movieId = id
+        
+        if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
+            let rootViewController = UINavigationController(rootViewController: detailViewController)
+            showDetailViewController(rootViewController, sender: self)
+        } else {
+            navigationController?.pushViewController(detailViewController, animated: true)
+        }
+    }
+    
     func navigate(to id: TVSeries) {
-        let detailViewController = SerieDetail()
+        let detailViewController = DetailController()
         detailViewController.tvSerieId = id
         
         if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {

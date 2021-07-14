@@ -7,15 +7,16 @@
 
 import UIKit
 
-final class TVSeriesList: UITableViewController {
+final class HomeController: UITableViewController {
     
     private let cellId = "cellId"
-    private var viewModel: SeriesViewModel!
+    private var viewModel: HomeViewModel!
     private var searchViewModel: SearchViewModel!
     
     private var customRefreshControl = UIRefreshControl()
     private let searchController = UISearchController(searchResultsController: nil)
     private var errorMessageView: ErrorView!
+    
     private lazy var horizontalSelectionView: HorizontalSelectionView = {
         let horizontalSelectionView = HorizontalSelectionView()
         horizontalSelectionView.delegate = self
@@ -25,8 +26,8 @@ final class TVSeriesList: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         interfaceSetUp()
-        viewModel = SeriesViewModel(APICall.shared)
-        searchViewModel = SearchViewModel(APICall.shared)
+        viewModel = HomeViewModel(TVSeriesAPI.shared)
+        searchViewModel = SearchViewModel(TVSeriesAPI.shared)
         viewModel.delegate = self
         searchViewModel.delegate = self
         bindViewModel()
@@ -57,6 +58,8 @@ final class TVSeriesList: UITableViewController {
         navigationItem.hidesSearchBarWhenScrolling = true
         navigationItem.searchController = searchController
         searchController.searchBar.backgroundImage = UIImage()
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.barTintColor = Constants.dynamicBackgroundColors
     }
     
     private func bindViewModel() {
@@ -98,32 +101,30 @@ final class TVSeriesList: UITableViewController {
         }
         searchViewModel?.searchSeries(query: query!)
     }
-    
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let yPosition = scrollView.contentOffset.y
-        if yPosition != 90 && yPosition != -44 && yPosition > -44 {
-            // do something
-        }
-        
-        if scrollView == tableView {
-            if tableView.rectForHeader(inSection: 0).origin.y <= tableView.contentOffset.y + CGFloat(50.0) && tableView.rectForHeader(inSection: 0).origin.y <= tableView.contentOffset.y + CGFloat(50.0) {
-//                navigationController?.navigationBar.tintColor = Constants.dynamicBackgroundColors
-//                navigationController?.navigationBar.isTranslucent = false
-            }
-        }
-    }
-    
 }
 
 // MARK: - EXTENSIONS
 
-extension TVSeriesList: Navigator, SelectionValue {
-    func selectionDidChangeValue(to option: String) {
-        print(option)
+extension HomeController: Navigator, SelectionValue {
+    
+    func moviesSelected(_ moviesSelected: Bool) {
+        viewModel.fetchSelectedOption(moviesSelected: moviesSelected)
+    }
+    
+    func navigate(to id: Movie) {
+        let detailViewController = DetailController()
+        detailViewController.movieId = id
+        
+        if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
+            let rootViewController = UINavigationController(rootViewController: detailViewController)
+            showDetailViewController(rootViewController, sender: self)
+        } else {
+            navigationController?.pushViewController(detailViewController, animated: true)
+        }
     }
     
     func navigate(to id: TVSeries) {
-        let detailViewController = SerieDetail()
+        let detailViewController = DetailController()
         detailViewController.tvSerieId = id
         
         if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
@@ -135,7 +136,7 @@ extension TVSeriesList: Navigator, SelectionValue {
     }
 }
 
-extension TVSeriesList: UISearchControllerDelegate, UISearchBarDelegate {
+extension HomeController: UISearchControllerDelegate, UISearchBarDelegate {
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -161,6 +162,7 @@ extension TVSeriesList: UISearchControllerDelegate, UISearchBarDelegate {
         if searchController.isActive && searchController.searchBar.text != "" { }
         else {
             if indexPath.row + 1 == viewModel.response.value.count && viewModel.serviceState.value != .loading {
+                
                 viewModel.page += 1
                 viewModel.fetchSeries()
             }
@@ -186,6 +188,16 @@ extension TVSeriesList: UISearchControllerDelegate, UISearchBarDelegate {
         } else {
             let item = viewModel.response.value[indexPath.row]
             item.select()
+        }
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if scrollView == tableView {
+            if tableView.rectForHeader(inSection: 0).origin.y <= tableView.contentOffset.y + CGFloat(50) && tableView.rectForHeader(inSection: 0).origin.y <= tableView.contentOffset.y + CGFloat(50) {
+//                navigationController?.navigationBar.barTintColor = Constants.dynamicBackgroundColors
+//                navigationController?.navigationBar.isTranslucent = false
+            }
         }
     }
     

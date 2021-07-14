@@ -19,5 +19,6 @@ public struct NetworkConstants {
     static let apiKey = "7481bbcf1fcb56bd957cfe9af78205f3"
     static let popularTVSeries = "/tv/popular/"
     static let searchTVPath = "/search/tv"
-    static let backdropPath = "https://image.tmdb.org/t/p/w500"
+    static let posterPath = "https://image.tmdb.org/t/p/w500/"
+    static let movies = "/movie/popular"
 }

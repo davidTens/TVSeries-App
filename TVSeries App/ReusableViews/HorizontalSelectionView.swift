@@ -68,7 +68,7 @@ extension HorizontalSelectionView: UICollectionViewDelegate, UICollectionViewDat
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.selectionDidChangeValue(to: options[indexPath.item])
+        options[indexPath.item] == "TV Series" ? delegate?.moviesSelected(false) : delegate?.moviesSelected(true)
         horizontalBarLeadingAnchor?.constant = frame.width * CGFloat(indexPath.item) / CGFloat(options.count)
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             self.layoutIfNeeded()

@@ -9,7 +9,7 @@ import Foundation
 
 final class SearchViewModel {
     
-    private var api: APICall?
+    private var api: TVSeriesAPI?
     var delegate: Navigator?
     
     lazy var page = 1
@@ -17,17 +17,17 @@ final class SearchViewModel {
     private (set) var response: Bindable<[ItemViewModel]> = Bindable([])
     private (set) var serviceState: Bindable<FetchingServiceState> = Bindable(.loading)
     
-    init(_ api: APICall) {
+    init(_ api: TVSeriesAPI) {
         self.api = api
     }
     
     func searchSeries(query: String) {
-        let adapter = SeriesAdapter(api: APICall.shared) { [weak self] in
+        let adapter = SeriesAdapter(api: TVSeriesAPI.shared) { [weak self] in
             self?.select(serie: $0)
         }
         serviceState.value = .loading
         let modifiedQuery = "&query=\(query)".replacingOccurrences(of: " ", with: "%20")
-        adapter.fetchSeries(endpoint: NetworkConstants.searchTVPath, language: language, page: page, query: modifiedQuery, completion: handleApiResults(_:))
+        adapter.fetchItems(endpoint: NetworkConstants.searchTVPath, language: language, page: page, query: modifiedQuery, completion: handleApiResults(_:))
     }
     
     private func handleApiResults(_ results: Result<[ItemViewModel], ErrorHandling>) {

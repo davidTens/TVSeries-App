@@ -9,22 +9,34 @@ import Foundation
 
 final class DetailViewModel {
     
-    private var api: APICall?
+    private var seriesAPI: TVSeriesAPI?
+    private var moviesAPI: MoviesAPI?
     var delegate: Navigator?
     
     lazy var page = 1
     private lazy var language = "en-US"
     private (set) var response: Bindable<[ItemViewModel]> = Bindable([])
     
-    init(_ api: APICall) {
-        self.api = api
+    init(_ series: TVSeriesAPI) {
+        self.seriesAPI = series
     }
     
-    func fetchSimilar(serieId: Int) {
-        let adapter = SeriesAdapter(api: APICall.shared) { [weak self] in
+    init(_ movies: MoviesAPI) {
+        self.moviesAPI = movies
+    }
+    
+    func fetchSimilarSerie(serieId: Int) {
+        let adapter = SeriesAdapter(api: TVSeriesAPI.shared) { [weak self] in
             self?.select(serie: $0)
         }
-        adapter.fetchSeries(endpoint: "/tv/\(String(serieId))/similar", language: language, page: page, query: nil, completion: handleApiResults(_:))
+        adapter.fetchItems(endpoint: "/tv/\(String(serieId))/similar", language: language, page: page, query: nil, completion: handleApiResults(_:))
+    }
+    
+    func fetchSimilarMovie(movieId: Int) {
+        let adapter = MoviesAdapter(api: MoviesAPI.shared) { [weak self] in
+            self?.select(movie: $0)
+        }
+        adapter.fetchItems(endpoint: "/movie/\(String(movieId))/similar", language: language, page: page, query: nil, completion: handleApiResults(_:))
     }
     
     private func handleApiResults(_ results: Result<[ItemViewModel], ErrorHandling>) {
@@ -40,5 +52,9 @@ final class DetailViewModel {
 extension DetailViewModel {
     private func select(serie: TVSeries) {
         delegate?.navigate(to: serie)
+    }
+    
+    private func select(movie: Movie) {
+        delegate?.navigate(to: movie)
     }
 }

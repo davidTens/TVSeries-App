@@ -9,8 +9,9 @@ import Foundation
 
 protocol Navigator {
     func navigate(to id: TVSeries)
+    func navigate(to id: Movie)
 }
 
 protocol SelectionValue {
-    func selectionDidChangeValue(to option: String)
+    func moviesSelected(_ bool: Bool)
 }

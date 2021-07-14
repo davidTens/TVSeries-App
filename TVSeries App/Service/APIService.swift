@@ -8,22 +8,41 @@
 import Foundation
 
 protocol APIService {
-    func fetchSeries(endpoint: String, language: String, page: Int, query: String?, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void)
+    func fetchItems(endpoint: String, language: String, page: Int, query: String?, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void)
 }
 
 struct SeriesAdapter: APIService {
-    let api: APICall
-    let select: (TVSeries) -> Void
+    let api: TVSeriesAPI
+    let selectSeries: (TVSeries) -> Void
     
-    func fetchSeries(endpoint: String, language: String, page: Int, query: String?, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void) {
+    func fetchItems(endpoint: String, language: String, page: Int, query: String?, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void) {
         api.fetchSeries(endpoint: endpoint, language: language, page: page, query: query) { result in
             completion( result.map { item in
                 return item.results.map { item in
-                    ItemViewModel(item, selection: {
-                        select(item)
-                    })
+                    ItemViewModel(item) {
+                        selectSeries(item)
+                    }
                 }
             })
         }
     }
 }
+
+struct MoviesAdapter: APIService {
+    let api: MoviesAPI
+    let select: (Movie) -> Void
+    
+    func fetchItems(endpoint: String, language: String, page: Int, query: String?, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void) {
+        api.fetchMovies(endpoint: endpoint, language: language, page: page, query: query) { result in
+            completion( result.map { item in
+                return item.results.map { item in
+                    ItemViewModel(item) {
+                        select(item)
+                    }
+                }
+            })
+        }
+    }
+}
+
+

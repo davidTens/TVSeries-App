@@ -1,16 +1,16 @@
 //
-//  TVSeriesModel.swift
-//  TV Series App
+//  MoviesModel.swift
+//  TVSeries App
 //
-//  Created by David T on 3/28/21.
+//  Created by David T on 7/13/21.
 //
 
 import Foundation
 
-public struct TVSeriesGroup: Decodable {
+public struct MoviesGroup: Decodable {
     
     let page: Int
-    let results: [TVSeries]
+    let results: [Movie]
     let totalResults: Int
     let totalPages: Int
     
@@ -22,7 +22,7 @@ public struct TVSeriesGroup: Decodable {
     }
 }
 
-public struct TVSeries: Decodable, Hashable {
+public struct Movie: Decodable, Hashable {
     
     let posterPath: String?
     let popularity: Double
@@ -30,13 +30,10 @@ public struct TVSeries: Decodable, Hashable {
     let backdropPath: String?
     let voteAverage: Decimal
     let overview: String
-    let firstAirDate: String
-    let originCountry: Array<String>
-    let genreIds: Array<Int>
+    let title: String
     let originalLanguage: String
-    let voteCount: Int
-    let name: String
-    let originalName: String
+    let originalTitle: String
+    let releaseDate: String
     
     enum CodingKeys: String, CodingKey {
         case posterPath = "poster_path"
@@ -45,13 +42,9 @@ public struct TVSeries: Decodable, Hashable {
         case backdropPath = "backdrop_path"
         case voteAverage = "vote_average"
         case overview = "overview"
-        case firstAirDate = "first_air_date"
-        case originCountry = "origin_country"
-        case genreIds = "genre_ids"
+        case title = "title"
         case originalLanguage = "original_language"
-        case voteCount = "vote_count"
-        case name = "name"
-        case originalName = "original_name"
-        
+        case originalTitle = "original_title"
+        case releaseDate = "release_date"
     }
 }

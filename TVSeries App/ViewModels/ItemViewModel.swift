@@ -7,28 +7,25 @@
 
 import Foundation
 
-struct ItemViewModel {
+public struct ItemViewModel {
     
-    private var series: TVSeries!
-    
-    var name: String {
-        return series.name
-    }
-    
-    var rating: String {
-        return "Rating - \(series.voteAverage)"
-    }
-    
-    var imageURLPath: String {
-        return "https://image.tmdb.org/t/p/w500/\(series.posterPath ?? "")"
-    }
-    
+    let name: String
+    let rating: String
+    let imageURLPath: String
     let select: () -> Void
     
-    init(_ item: TVSeries, selection: @escaping () -> Void) {
-        self.series = item
-        self.select = selection
+    init(_ series: TVSeries, selection: @escaping () -> Void) {
+        name = series.name
+        rating = "Rating - \(series.voteAverage)"
+        imageURLPath = "\(NetworkConstants.posterPath)\(series.posterPath ?? "")"
+        select = selection
     }
     
+    init(_ movie: Movie, selection: @escaping () -> Void) {
+        name = movie.title
+        rating = "Rating - \(movie.voteAverage)"
+        imageURLPath = "\(NetworkConstants.posterPath)\(movie.posterPath ?? "")"
+        select = selection
+    }
     
 }

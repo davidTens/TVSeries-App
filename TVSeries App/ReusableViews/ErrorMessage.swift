@@ -2,7 +2,7 @@
 //  ErrorMessage.swift
 //  TVSeries App
 //
-//  Created by Daviti Tsveniashvili on 7/8/21.
+//  Created by David T on 7/8/21.
 //
 
 import UIKit
