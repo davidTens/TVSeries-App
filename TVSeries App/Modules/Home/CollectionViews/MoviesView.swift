@@ -7,57 +7,22 @@
 
 import UIKit
 
-final class MoviesCell: UICollectionViewCell {
+final class MoviesCell: BaseCell {
     private let cellId = "cellId"
     
     private var viewModel: MoviesViewModel!
     private var searchViewModel: SearchMoviesViewModel!
     lazy var homeController = HomeViewController()
     
-    private lazy var errorView: ErrorView = {
-        let errorView = ErrorView()
-        errorView.isHidden = true
-        return errorView
-    }()
     
-    private var customRefreshControl = UIRefreshControl()
-    
-    private lazy var headerView: UIView = {
-        let headerView = UIView()
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        headerView.backgroundColor = Constants.dynamicBackgroundColors
-        return headerView
-    }()
-    
-    private lazy var searchTextField: UITextField = {
-        let searchTextField = UITextField()
+    override func setup() {
+        super.setup()
         searchTextField.delegate = self
-        searchTextField.backgroundColor = #colorLiteral(red: 0.8997321725, green: 0.8998831511, blue: 0.8997122645, alpha: 1) | #colorLiteral(red: 0.404363513, green: 0.4044361711, blue: 0.4043539762, alpha: 1)
-        searchTextField.textColor = Constants.dynamicSubColors
-        searchTextField.clearButtonMode = .whileEditing
-        searchTextField.layer.cornerRadius = 10
-        searchTextField.placeholder = "Search TV Series"
-        searchTextField.clearButtonMode = .always
-        searchTextField.returnKeyType = .search
-        searchTextField.enablesReturnKeyAutomatically = true
-        searchTextField.setLeftPaddingPoints(15)
-        return searchTextField
-    }()
-    
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
+        searchTextField.placeholder = "Search Movies"
+        tableView.register(MainListCell.self, forCellReuseIdentifier: cellId)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = .clear
-        tableView.separatorStyle = .none
-        tableView.register(TVSeriesListCell.self, forCellReuseIdentifier: cellId)
-        tableView.contentInset = UIEdgeInsets(top: 28, left: 0, bottom: 0, right: 0)
-        return tableView
-    }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupUI()
+        
         viewModel = MoviesViewModel(MoviesAPI.shared)
         searchViewModel = SearchMoviesViewModel(MoviesAPI.shared)
         viewModel.delegate = self
@@ -65,26 +30,6 @@ final class MoviesCell: UICollectionViewCell {
         bindViewModel()
         customRefreshControl.beginRefreshing()
         viewModel.fetchMovies()
-    }
-    
-    private func setupUI() {
-        addSubview(tableView)
-        tableView.layout(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor)
-        
-        customRefreshControl.tintColor = Constants.dynamicSubColors
-        customRefreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
-        tableView.addSubview(customRefreshControl)
-        
-        addSubview(errorView)
-        errorView.layout(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 80, left: 0, bottom: 0, right: 0), size: .init(width: 0, height: 45))
-        
-        addSubview(headerView)
-        
-        headerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        headerView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
-        
-        headerView.addSubview(searchTextField)
-        searchTextField.layout(top: headerView.safeAreaLayoutGuide.topAnchor, leading: headerView.safeAreaLayoutGuide.leadingAnchor, bottom: headerView.bottomAnchor, trailing: headerView.safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 10, left: 10, bottom: 0, right: 10))
     }
     
     private func bindViewModel() {
@@ -127,7 +72,9 @@ final class MoviesCell: UICollectionViewCell {
     
     @objc private func refresh() {
         customRefreshControl.endRefreshing()
-        viewModel.refresh()
+        if searchTextField.isEditing == false {
+            viewModel.refresh()
+        }
     }
     
     private func perfromSearch(_ query: String?) {
@@ -136,16 +83,6 @@ final class MoviesCell: UICollectionViewCell {
             searchViewModel.result.value.removeAll()
         }
         searchViewModel.searchMovies(query: query!)
-    }
-    
-    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-        if searchTextField.isEditing {
-            searchTextField.resignFirstResponder()
-        }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -174,7 +111,8 @@ extension MoviesCell: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if searchTextField.text != "" {
+        tableView.deselectRow(at: indexPath, animated: true)
+        if searchTextField.text != "" && viewModel.result.value.count == 0 {
             let serie = searchViewModel.result.value[indexPath.row]
             serie.select()
         } else {
@@ -184,7 +122,7 @@ extension MoviesCell: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! TVSeriesListCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! MainListCell
         if searchTextField.text != "" {
             let serie = searchViewModel.result.value[indexPath.row]
             cell.configure(serie)

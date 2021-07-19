@@ -45,6 +45,7 @@ final class HomeViewController: UIViewController {
         view.backgroundColor = Constants.dynamicBackgroundColors
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.barTintColor = Constants.dynamicBackgroundColors
+        navigationController?.navigationBar.tintColor = Constants.dynamicSubColors
         
         view.addSubview(horizontalSelectionView)
         horizontalSelectionView.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: .init(width: 0, height: 50))

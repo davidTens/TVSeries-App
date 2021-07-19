@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class TVSeriesListCell: UITableViewCell {
+final class MainListCell: UITableViewCell {
     
     private lazy var customImageView: UIImageView = {
         let customImageView = UIImageView()
