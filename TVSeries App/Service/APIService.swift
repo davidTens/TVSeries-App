@@ -16,7 +16,7 @@ final public class TVSeriesAPI {
     func fetchSeries(endpoint: String, language: String, page: Int, query: String? = nil, completion: @escaping (Result<TVSeriesGroup, ErrorHandling>) -> Void) {
         
         let finalPath = NetworkConstants.baseURL + endpoint + "?api_key=" + NetworkConstants.apiKey + "&language=" + language + "&page=\(page)\(query ?? "")"
-        print(finalPath)
+        
         guard let url = URL(string: finalPath)
         else {
             return completion(.failure(.apiError))
@@ -44,7 +44,6 @@ final public class TVSeriesAPI {
             do {
                 let seriesList = try JSONDecoder().decode(TVSeriesGroup.self, from: data)
                 completion(.success(seriesList))
-                print(seriesList.results.count)
             }
             catch {
                 completion(.failure(.invalidData))
@@ -64,7 +63,7 @@ final public class MoviesAPI {
     func fetchMovies(endpoint: String, language: String, page: Int, query: String? = nil, completion: @escaping (Result<MoviesGroup, ErrorHandling>) -> Void) {
         
         let finalPath = NetworkConstants.baseURL + endpoint + "?api_key=" + NetworkConstants.apiKey + "&language=" + language + "&page=\(page)\(query ?? "")"
-        print(finalPath)
+        
         guard let url = URL(string: finalPath)
         else {
             return completion(.failure(.apiError))
