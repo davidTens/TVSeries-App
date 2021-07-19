@@ -1,48 +1,109 @@
 //
 //  APIService.swift
-//  TVSeries App
+//  TV Series App
 //
-//  Created by David T on 7/7/21.
+//  Created by David T on 3/22/21.
 //
 
 import Foundation
 
-protocol APIService {
-    func fetchItems(endpoint: String, language: String, page: Int, query: String?, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void)
-}
-
-struct SeriesAdapter: APIService {
-    let api: TVSeriesAPI
-    let selectSeries: (TVSeries) -> Void
+final public class TVSeriesAPI {
     
-    func fetchItems(endpoint: String, language: String, page: Int, query: String?, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void) {
-        api.fetchSeries(endpoint: endpoint, language: language, page: page, query: query) { result in
-            completion( result.map { item in
-                return item.results.map { item in
-                    ItemViewModel(item) {
-                        selectSeries(item)
-                    }
-                }
-            })
+    public static let shared = TVSeriesAPI()
+    
+    private init() {}
+    
+    func fetchSeries(endpoint: String, language: String, page: Int, query: String? = nil, completion: @escaping (Result<TVSeriesGroup, ErrorHandling>) -> Void) {
+        
+        let finalPath = NetworkConstants.baseURL + endpoint + "?api_key=" + NetworkConstants.apiKey + "&language=" + language + "&page=\(page)\(query ?? "")"
+        print(finalPath)
+        guard let url = URL(string: finalPath)
+        else {
+            return completion(.failure(.apiError))
         }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            
+            if let _ = error {
+                completion(.failure(.invalidResponse))
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200
+            else {
+                completion(.failure(.invalidData))
+                return
+            }
+            
+            guard let data = data
+            else {
+                completion(.failure(.invalidData))
+                return
+            }
+            
+            do {
+                let seriesList = try JSONDecoder().decode(TVSeriesGroup.self, from: data)
+                completion(.success(seriesList))
+                print(seriesList.results.count)
+            }
+            catch {
+                completion(.failure(.invalidData))
+            }
+        }
+        task.resume()
     }
 }
 
-struct MoviesAdapter: APIService {
-    let api: MoviesAPI
-    let select: (Movie) -> Void
+
+final public class MoviesAPI {
     
-    func fetchItems(endpoint: String, language: String, page: Int, query: String?, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void) {
-        api.fetchMovies(endpoint: endpoint, language: language, page: page, query: query) { result in
-            completion( result.map { item in
-                return item.results.map { item in
-                    ItemViewModel(item) {
-                        select(item)
-                    }
-                }
-            })
+    public static let shared = MoviesAPI()
+    
+    private init() {}
+    
+    func fetchMovies(endpoint: String, language: String, page: Int, query: String? = nil, completion: @escaping (Result<MoviesGroup, ErrorHandling>) -> Void) {
+        
+        let finalPath = NetworkConstants.baseURL + endpoint + "?api_key=" + NetworkConstants.apiKey + "&language=" + language + "&page=\(page)\(query ?? "")"
+        print(finalPath)
+        guard let url = URL(string: finalPath)
+        else {
+            return completion(.failure(.apiError))
         }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            
+            if let _ = error {
+                completion(.failure(.invalidResponse))
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200
+            else {
+                completion(.failure(.invalidData))
+                return
+            }
+            
+            guard let data = data
+            else {
+                completion(.failure(.invalidData))
+                return
+            }
+            
+            do {
+                let moviesList = try JSONDecoder().decode(MoviesGroup.self, from: data)
+                completion(.success(moviesList))
+            }
+            catch {
+                completion(.failure(.invalidData))
+            }
+        }
+        task.resume()
     }
 }
 
-
+enum ErrorHandling: String, Error {
+    
+    case apiError = "Invalid api"
+    case invalidResponse = "Invalid response"
+    case invalidData = "Invalid Data"
+}

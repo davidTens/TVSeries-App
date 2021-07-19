@@ -9,8 +9,6 @@ import UIKit
 
 final class TVSeriesListCell: UITableViewCell {
     
-    var tvSeries: TVSeries!
-    
     private lazy var customImageView: UIImageView = {
         let customImageView = UIImageView()
         customImageView.backgroundColor = UIColor(hexFromString: "#F4F4F4")

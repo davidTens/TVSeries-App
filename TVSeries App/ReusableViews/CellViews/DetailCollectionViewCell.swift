@@ -9,7 +9,7 @@ import UIKit
 
 final class DetailCollectionViewCell: UICollectionViewCell {
     
-    lazy var customImageView: UIImageView = {
+    private lazy var customImageView: UIImageView = {
         let customImageView = UIImageView()
         customImageView.backgroundColor = UIColor(hexFromString: "#F4F4F4")
         customImageView.layer.masksToBounds = true
@@ -17,7 +17,7 @@ final class DetailCollectionViewCell: UICollectionViewCell {
         return customImageView
     }()
     
-    lazy var titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.font = .boldSystemFont(ofSize: 16)
         titleLabel.textAlignment = .left

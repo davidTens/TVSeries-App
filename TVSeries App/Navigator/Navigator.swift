@@ -7,11 +7,16 @@
 
 import Foundation
 
-protocol Navigator {
-    func navigate(to id: TVSeries)
+protocol MovieNavigator {
     func navigate(to id: Movie)
 }
 
-protocol SelectionValue {
-    func moviesSelected(_ bool: Bool)
+protocol SerieNavigator {
+    func navigate(to id: TVSeries)
 }
+
+protocol SelectionValue {
+    func scrollToIndex(_ index: Int)
+}
+
+protocol DetailNavigator: MovieNavigator, SerieNavigator { }

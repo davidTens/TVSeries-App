@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Bindable<T> {
+final class Bindable<T> {
     
     typealias Listener = ((T) -> Void)
     private var listener: Listener?

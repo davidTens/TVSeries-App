@@ -11,7 +11,7 @@ final class DetailViewModel {
     
     private var seriesAPI: TVSeriesAPI?
     private var moviesAPI: MoviesAPI?
-    var delegate: Navigator?
+    var delegate: DetailNavigator?
     
     lazy var page = 1
     private lazy var language = "en-US"

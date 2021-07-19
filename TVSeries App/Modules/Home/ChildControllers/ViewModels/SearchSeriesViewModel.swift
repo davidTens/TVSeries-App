@@ -7,14 +7,14 @@
 
 import Foundation
 
-final class SearchViewModel {
+final class SearchSeriesViewModel {
     
     private var api: TVSeriesAPI?
-    var delegate: Navigator?
+    var delegate: SerieNavigator?
     
     lazy var page = 1
     private lazy var language = "en-US"
-    private (set) var response: Bindable<[ItemViewModel]> = Bindable([])
+    private (set) var result: Bindable<[ItemViewModel]> = Bindable([])
     private (set) var serviceState: Bindable<FetchingServiceState> = Bindable(.loading)
     
     init(_ api: TVSeriesAPI) {
@@ -33,7 +33,7 @@ final class SearchViewModel {
     private func handleApiResults(_ results: Result<[ItemViewModel], ErrorHandling>) {
         switch results {
         case .success(let list):
-            response.value.append(contentsOf: list)
+            result.value.append(contentsOf: list)
         case .failure(let error):
             serviceState.value = .error(error.rawValue)
         }
@@ -41,7 +41,7 @@ final class SearchViewModel {
     }
 }
 
-extension SearchViewModel {
+extension SearchSeriesViewModel {
     private func select(serie: TVSeries) {
         delegate?.navigate(to: serie)
     }

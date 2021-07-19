@@ -9,11 +9,11 @@ import UIKit
 
 public final class HorizontalSelectionView: UIView {
     
-    private lazy var options = ["TV Series", "Movies"]
-    private lazy var cellId = "cellId"
     var delegate: SelectionValue?
+    lazy var options = ["TV Series", "Movies"]
+    private lazy var cellId = "cellId"
     
-    private lazy var collectionView: UICollectionView = {
+    lazy var collectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.register(SelectionCell.self, forCellWithReuseIdentifier: cellId)
@@ -22,6 +22,7 @@ public final class HorizontalSelectionView: UIView {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.isScrollEnabled = false
         return collectionView
     }()
     
@@ -32,7 +33,7 @@ public final class HorizontalSelectionView: UIView {
         return horizontalBar
     }()
     
-    private var horizontalBarLeadingAnchor: NSLayoutConstraint?
+    var horizontalBarLeadingAnchor: NSLayoutConstraint?
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -68,11 +69,7 @@ extension HorizontalSelectionView: UICollectionViewDelegate, UICollectionViewDat
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        options[indexPath.item] == "TV Series" ? delegate?.moviesSelected(false) : delegate?.moviesSelected(true)
-        horizontalBarLeadingAnchor?.constant = frame.width * CGFloat(indexPath.item) / CGFloat(options.count)
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-            self.layoutIfNeeded()
-        }, completion: nil)
+        delegate?.scrollToIndex(indexPath.item)
     }
     
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {

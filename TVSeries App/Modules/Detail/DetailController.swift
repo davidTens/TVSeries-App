@@ -208,7 +208,7 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     
 }
 
-extension DetailController: Navigator {
+extension DetailController: DetailNavigator {
     func navigate(to id: Movie) {
         let detailViewController = DetailController()
         detailViewController.movieId = id
