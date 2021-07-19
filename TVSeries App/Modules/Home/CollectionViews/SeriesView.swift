@@ -73,7 +73,7 @@ final class SeriesCell: BaseCell {
     
     @objc private func refresh() {
         customRefreshControl.endRefreshing()
-        if searchTextField.isEditing == false {
+        if searchViewModel.result.value.count == 0 {
             viewModel.refresh()
         }
     }

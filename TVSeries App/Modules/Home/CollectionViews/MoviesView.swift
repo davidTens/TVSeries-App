@@ -14,7 +14,6 @@ final class MoviesCell: BaseCell {
     private var searchViewModel: SearchMoviesViewModel!
     lazy var homeController = HomeViewController()
     
-    
     override func setup() {
         super.setup()
         searchTextField.delegate = self
@@ -22,6 +21,8 @@ final class MoviesCell: BaseCell {
         tableView.register(MainListCell.self, forCellReuseIdentifier: cellId)
         tableView.delegate = self
         tableView.dataSource = self
+        
+        customRefreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         
         viewModel = MoviesViewModel(MoviesAPI.shared)
         searchViewModel = SearchMoviesViewModel(MoviesAPI.shared)
@@ -72,7 +73,7 @@ final class MoviesCell: BaseCell {
     
     @objc private func refresh() {
         customRefreshControl.endRefreshing()
-        if searchTextField.isEditing == false {
+        if searchViewModel.result.value.count == 0 {
             viewModel.refresh()
         }
     }
