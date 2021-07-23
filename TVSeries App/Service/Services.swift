@@ -11,11 +11,9 @@ import Foundation
 struct SeriesServices: ItemsService {
     
     let api: ApiService
-    let select: (TVSeries) -> Void
     
-    init(_ api: ApiService, selection: @escaping (TVSeries)-> Void) {
+    init(_ api: ApiService) {
         self.api = api
-        self.select = selection
     }
     
     func fetchData(language: String, page: Int, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void) {
@@ -23,9 +21,7 @@ struct SeriesServices: ItemsService {
                        language: language, page: page, query: nil) { (result: Result<TVSeriesGroup, ErrorHandling>) in
             completion( result.map { item in
                 return item.results.map { item in
-                    ItemViewModel(item) {
-                        select(item)
-                    }
+                    ItemViewModel(item)
                 }
             })
         }
@@ -36,9 +32,7 @@ struct SeriesServices: ItemsService {
                        language: language, page: page, query: query) { (result: Result<TVSeriesGroup, ErrorHandling>) in
             completion( result.map { item in
                 return item.results.map { item in
-                    ItemViewModel(item) {
-                        select(item)
-                    }
+                    ItemViewModel(item)
                 }
             })
         }
@@ -48,9 +42,7 @@ struct SeriesServices: ItemsService {
         api.get(endpoint: "/tv/\(String(id))/similar", language: language, page: page) { (result: Result<TVSeriesGroup, ErrorHandling>) in
             completion( result.map { item in
                 return item.results.map { item in
-                    ItemViewModel(item) {
-                        select(item)
-                    }
+                    ItemViewModel(item)
                 }
             })
         }
@@ -60,11 +52,9 @@ struct SeriesServices: ItemsService {
 struct MoviesServices: ItemsService {
     
     let api: ApiService
-    let select: (Movie) -> Void
     
-    init(_ api: ApiService, selection: @escaping (Movie) -> Void) {
+    init(_ api: ApiService) {
         self.api = api
-        self.select = selection
     }
     
     func fetchData(language: String, page: Int, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void) {
@@ -72,9 +62,7 @@ struct MoviesServices: ItemsService {
                        language: language, page: page, query: nil) { (result: Result<MoviesGroup, ErrorHandling>) in
             completion( result.map { item in
                 return item.results.map { item in
-                    ItemViewModel(item) {
-                        select(item)
-                    }
+                    ItemViewModel(item)
                 }
             })
         }
@@ -85,9 +73,7 @@ struct MoviesServices: ItemsService {
                        language: language, page: page, query: query) { (result: Result<MoviesGroup, ErrorHandling>) in
             completion( result.map { item in
                 return item.results.map { item in
-                    ItemViewModel(item) {
-                        select(item)
-                    }
+                    ItemViewModel(item)
                 }
             })
         }
@@ -97,9 +83,7 @@ struct MoviesServices: ItemsService {
         api.get(endpoint: "/movie/\(String(id))/similar", language: language, page: page) { (result: Result<MoviesGroup, ErrorHandling>) in
             completion( result.map { item in
                 return item.results.map { item in
-                    ItemViewModel(item) {
-                        select(item)
-                    }
+                    ItemViewModel(item)
                 }
             })
         }

@@ -19,9 +19,8 @@ public struct ItemViewModel {
     let originCountry: String
     let language: String
     let overview: String
-    let select: () -> Void
     
-    init(_ item: TVSeries, selection: @escaping () -> Void) {
+    init(_ item: TVSeries) {
         id = item.id
         name = item.name
         rating = "Rating - \(item.voteAverage)"
@@ -32,10 +31,10 @@ public struct ItemViewModel {
         language = item.originalLanguage
         originCountry = item.originCountry.first ?? ""
         overview = item.overview
-        select = selection
+        
     }
     
-    init(_ item: Movie, selection: @escaping () -> Void) {
+    init(_ item: Movie) {
         id = item.id
         name = item.title
         rating = "Rating - \(item.voteAverage)"
@@ -46,7 +45,6 @@ public struct ItemViewModel {
         realeaseDate = item.releaseDate
         language = item.originalLanguage
         originCountry = ""
-        select = selection
     }
     
 }
