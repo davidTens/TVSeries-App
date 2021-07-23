@@ -1,13 +1,13 @@
 //
-//  BaseCell.swift
+//  BaseViewController.swift
 //  TVSeries App
 //
-//  Created by David T on 7/19/21.
+//  Created by David T on 7/22/21.
 //
 
 import UIKit
 
-class BaseCell: UICollectionViewCell {
+class BaseViewController: UIViewController {
     
     lazy var customRefreshControl = UIRefreshControl()
     
@@ -41,22 +41,23 @@ class BaseCell: UICollectionViewCell {
         let tableView = UITableView()
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
-        tableView.contentInset = UIEdgeInsets(top: 28, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)
         return tableView
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        addSubview(tableView)
-        tableView.layout(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.addSubview(tableView)
+        tableView.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor)
         
         customRefreshControl.tintColor = Constants.dynamicSubColors
         tableView.addSubview(customRefreshControl)
         
-        addSubview(errorView)
-        errorView.layout(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 80, left: 0, bottom: 0, right: 0), size: .init(width: 0, height: 45))
+        view.addSubview(errorView)
+        errorView.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 80, left: 0, bottom: 0, right: 0), size: .init(width: 0, height: 45))
         
-        addSubview(headerView)
+        view.addSubview(headerView)
         
         headerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         headerView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
@@ -72,9 +73,5 @@ class BaseCell: UICollectionViewCell {
         if searchTextField.isEditing {
             searchTextField.resignFirstResponder()
         } else { }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

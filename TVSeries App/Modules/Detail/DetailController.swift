@@ -9,35 +9,21 @@ import UIKit
 
 final class DetailController: UITableViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    var tvSerieId: TVSeries? {
+    var itemViewModel: ItemViewModel? {
         didSet {
-            if let backdropPath = tvSerieId?.backdropPath, let name = tvSerieId?.originalName {
+            if let urlString = itemViewModel?.backdropPath, let name = itemViewModel?.originalName {
                 navigationItem.title = name
-                customImageView.loadImageUsingCacheWithURL(urlString: "\(NetworkConstants.posterPath)/\(backdropPath)")
+                customImageView.loadImageUsingCacheWithURL(urlString: urlString)
             }
-            listOfDataToShow.append(tvSerieId?.overview ?? absenceOfValue)
-            listOfDataToShow.append(tvSerieId?.originalName ?? absenceOfValue)
-            listOfDataToShow.append(tvSerieId?.firstAirDate ?? absenceOfValue)
-            listOfDataToShow.append(tvSerieId?.originCountry.first ?? absenceOfValue)
-            listOfDataToShow.append(tvSerieId?.originalLanguage ?? absenceOfValue)
+            listOfDataToShow.append(itemViewModel?.overview ?? absenceOfValue)
+            listOfDataToShow.append(itemViewModel?.name ?? absenceOfValue)
+            listOfDataToShow.append(itemViewModel?.realeaseDate ?? absenceOfValue)
+            listOfDataToShow.append(itemViewModel?.originCountry ?? absenceOfValue)
+            listOfDataToShow.append(itemViewModel?.language ?? absenceOfValue)
         }
     }
     
-    var movieId: Movie? {
-        didSet {
-            if let backdropPath = movieId?.backdropPath, let title = movieId?.originalTitle {
-                navigationItem.title = title
-                customImageView.loadImageUsingCacheWithURL(urlString: "\(NetworkConstants.posterPath)/\(backdropPath)")
-            }
-            listOfDataToShow.append(movieId?.overview ?? absenceOfValue)
-            listOfDataToShow.append(movieId?.originalTitle ?? absenceOfValue)
-            listOfDataToShow.append(movieId?.releaseDate ?? absenceOfValue)
-            listOfDataToShow.append(absenceOfValue)
-            listOfDataToShow.append(movieId?.originalLanguage ?? absenceOfValue)
-        }
-    }
-    
-    var viewModel: DetailViewModel!
+    private let viewModel: DetailViewModel
     
     private let collCellId = "collectionCellId"
     private let tableCellId = "tableCellId"
@@ -85,23 +71,24 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
         return customCollectionView
     }()
     
+    init(viewModel: DetailViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.separatorStyle = .none
         view.backgroundColor = Constants.dynamicBackgroundColors
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: tableCellId)
-        
-        
-        viewModel = DetailViewModel(TVSeriesAPI.shared)
         viewModel.delegate = self
         bindViewModel()
-        if let id = tvSerieId?.id {
-            viewModel.fetchSimilarSerie(serieId: id)
-            print("series")
-        }
-        if let id = movieId?.id {
-            viewModel.fetchSimilarMovie(movieId: id)
-            print("movies")
+        if let id = itemViewModel?.id {
+            viewModel.fetchSimilarData(with: id)
         }
     }
     
@@ -111,7 +98,7 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     }
     
     private func bindViewModel() {
-        viewModel?.response.bind({ [weak self] _ in
+        viewModel.result.bind({ [weak self] _ in
             DispatchQueue.main.async {
                 self?.customCollectionView.reloadData()
             }
@@ -155,18 +142,19 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     //  MARK: - collectionView Data Source
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.response.value.count
+        return viewModel.result.value.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collCellId, for: indexPath) as! DetailCollectionViewCell
-        cell.configure(viewModel.response.value[indexPath.row])
+        let item = viewModel.result.value[indexPath.row]
+        cell.configure(item)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let resultsId = viewModel.response.value[indexPath.row]
-        resultsId.select()
+        let item = viewModel.result.value[indexPath.row]
+        navigate(id: item)
     }
     
     // MARK: - tableView Data Source
@@ -208,23 +196,12 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     
 }
 
-extension DetailController: DetailNavigator {
-    func navigate(to id: Movie) {
-        let detailViewController = DetailController()
-        detailViewController.movieId = id
-        
-        if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
-            let rootViewController = UINavigationController(rootViewController: detailViewController)
-            showDetailViewController(rootViewController, sender: self)
-        } else {
-            navigationController?.pushViewController(detailViewController, animated: true)
-        }
-    }
-    
-    func navigate(to id: TVSeries) {
-        let detailViewController = DetailController()
-        detailViewController.tvSerieId = id
-        
+
+extension DetailController: Navigator {
+    func navigate(id: ItemViewModel) {
+        let detailViewController = DetailController(viewModel: ItemListFactory.makeDetailViewModelForSeries())
+        detailViewController.itemViewModel = id
+
         if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
             let rootViewController = UINavigationController(rootViewController: detailViewController)
             showDetailViewController(rootViewController, sender: self)
@@ -233,3 +210,4 @@ extension DetailController: DetailNavigator {
         }
     }
 }
+

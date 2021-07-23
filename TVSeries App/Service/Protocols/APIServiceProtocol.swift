@@ -7,6 +7,8 @@
 
 import Foundation
 
-protocol APIService {
-    func fetchItems(endpoint: String, language: String, page: Int, query: String?, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void)
+protocol ItemsService {
+    func fetchData(language: String, page: Int, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void)
+    func searchData(language: String, page: Int, query: String?, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void)
+    func fetchSimilar(language: String, page: Int, id: Int, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void)
 }

@@ -9,22 +9,43 @@ import Foundation
 
 public struct ItemViewModel {
     
+    let id: Int
     let name: String
     let rating: String
     let imageURLPath: String
+    let backdropPath: String
+    let originalName: String
+    let realeaseDate: String
+    let originCountry: String
+    let language: String
+    let overview: String
     let select: () -> Void
     
-    init(_ series: TVSeries, selection: @escaping () -> Void) {
-        name = series.name
-        rating = "Rating - \(series.voteAverage)"
-        imageURLPath = "\(NetworkConstants.posterPath)\(series.posterPath ?? "")"
+    init(_ item: TVSeries, selection: @escaping () -> Void) {
+        id = item.id
+        name = item.name
+        rating = "Rating - \(item.voteAverage)"
+        imageURLPath = "\(NetworkConstants.posterPath)\(item.posterPath ?? "")"
+        backdropPath = "\(NetworkConstants.posterPath)/\(item.backdropPath ?? "")"
+        originalName = item.originalName
+        realeaseDate = item.firstAirDate
+        language = item.originalLanguage
+        originCountry = item.originCountry.first ?? ""
+        overview = item.overview
         select = selection
     }
     
-    init(_ movie: Movie, selection: @escaping () -> Void) {
-        name = movie.title
-        rating = "Rating - \(movie.voteAverage)"
-        imageURLPath = "\(NetworkConstants.posterPath)\(movie.posterPath ?? "")"
+    init(_ item: Movie, selection: @escaping () -> Void) {
+        id = item.id
+        name = item.title
+        rating = "Rating - \(item.voteAverage)"
+        imageURLPath = "\(NetworkConstants.posterPath)\(item.posterPath ?? "")"
+        backdropPath = "\(NetworkConstants.posterPath)/\(item.backdropPath ?? "")"
+        overview = item.overview
+        originalName = item.originalTitle
+        realeaseDate = item.releaseDate
+        language = item.originalLanguage
+        originCountry = ""
         select = selection
     }
     
