@@ -72,7 +72,7 @@ final class MoviesViewController: BaseViewController  {
 
 extension MoviesViewController: Navigator {
     func navigate(id: ItemViewModel) {
-        let detailViewController = DetailController(viewModel: ItemListFactory.makeDetailViewModelForSeries())
+        let detailViewController = DetailController(viewModel: ItemListFactory.makeDetailViewModelForMovies())
         detailViewController.itemViewModel = id
         
         if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {

@@ -199,7 +199,7 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
 
 extension DetailController: Navigator {
     func navigate(id: ItemViewModel) {
-        let detailViewController = DetailController(viewModel: ItemListFactory.makeDetailViewModelForSeries())
+        let detailViewController = DetailController(viewModel: viewModel)
         detailViewController.itemViewModel = id
 
         if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
