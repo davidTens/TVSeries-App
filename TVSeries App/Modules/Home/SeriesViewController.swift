@@ -29,6 +29,7 @@ final class SeriesViewController: BaseViewController  {
         tableView.dataSource = self
         searchTextField.delegate = self
         searchTextField.placeholder = "Search TV Series"
+        customRefreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         viewModel.delegate = self
         bindViewModel()
         customRefreshControl.beginRefreshing()
@@ -51,16 +52,17 @@ final class SeriesViewController: BaseViewController  {
                 case .loading, .finished:
                     break
                 }
+                self?.customRefreshControl.endRefreshing()
             }
         }
     }
     
-    func refresh() {
+    @objc private func refresh() {
         viewModel.refresh()
         customRefreshControl.endRefreshing()
     }
     
-    func performSearch(_ query: String?) {
+    private func performSearch(_ query: String?) {
         if viewModel.result.value.count > 0 {
             viewModel.result.value.removeAll()
             tableView.reloadData()

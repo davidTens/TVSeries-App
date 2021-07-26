@@ -29,6 +29,7 @@ final class MoviesViewController: BaseViewController  {
         tableView.dataSource = self
         searchTextField.delegate = self
         searchTextField.placeholder = "Search Movies"
+        customRefreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         viewModel.delegate = self
         bindViewModel()
         customRefreshControl.beginRefreshing()
@@ -51,11 +52,12 @@ final class MoviesViewController: BaseViewController  {
                 case .loading, .finished:
                     break
                 }
+                self?.customRefreshControl.endRefreshing()
             }
         }
     }
     
-    private func refresh() {
+    @objc private func refresh() {
         viewModel.refresh()
         customRefreshControl.endRefreshing()
     }

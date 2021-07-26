@@ -158,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				0BF5074326AAAD1400A3755A /* ItemListFactory.swift */,
+				0BF5073B26A9D3FB00A3755A /* HomePageViewController.swift */,
 				0B8559E226A58A8E00B0809E /* Detail */,
 				0B8559DC26A588D300B0809E /* Home */,
 			);
@@ -169,7 +170,6 @@
 			children = (
 				0BD9F7F826A5A42200617669 /* Views */,
 				0B8559DD26A5891800B0809E /* ViewControllers */,
-				0BF5073B26A9D3FB00A3755A /* HomePageViewController.swift */,
 				0BF5073D26A9D43000A3755A /* SeriesViewController.swift */,
 				0BF5074126A9D80100A3755A /* MoviesViewController.swift */,
 				0BF5073F26A9D44F00A3755A /* BaseViewController.swift */,

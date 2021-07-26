@@ -26,6 +26,7 @@ final class ItemsViewModel {
     }
 
     func fetchData(query: String? = nil) {
+        serviceState.value = .loading
         if let value = query {
             let modifiedQuery = "&query=\(value)".replacingOccurrences(of: " ", with: "%20")
             itemsService.searchData(language: language, page: page, query: modifiedQuery, completion: handleApiResults)
