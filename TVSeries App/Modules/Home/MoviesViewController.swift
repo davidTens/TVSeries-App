@@ -52,7 +52,6 @@ final class MoviesViewController: BaseViewController  {
                 case .loading, .finished:
                     break
                 }
-                self?.customRefreshControl.endRefreshing()
             }
         }
     }

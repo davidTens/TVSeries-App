@@ -52,7 +52,6 @@ final class SeriesViewController: BaseViewController  {
                 case .loading, .finished:
                     break
                 }
-                self?.customRefreshControl.endRefreshing()
             }
         }
     }
