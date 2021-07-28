@@ -38,6 +38,7 @@
 		751B9BE32611A2CF005EA5A2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751B9BE12611A2CF005EA5A2 /* Extensions.swift */; };
 		751B9BEA2611A2DA005EA5A2 /* TVSeriesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751B9BE82611A2DA005EA5A2 /* TVSeriesModel.swift */; };
 		751B9BFA2611A340005EA5A2 /* TVSeries_AppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751B9BF92611A340005EA5A2 /* TVSeries_AppTests.swift */; };
+		75BF622026B1766400137C35 /* MoviesDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BF621F26B1766400137C35 /* MoviesDetailModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +88,7 @@
 		751B9BF72611A340005EA5A2 /* TVSeries AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TVSeries AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		751B9BF92611A340005EA5A2 /* TVSeries_AppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSeries_AppTests.swift; sourceTree = "<group>"; };
 		751B9BFB2611A340005EA5A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		75BF621F26B1766400137C35 /* MoviesDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MoviesDetailModel.swift; path = ../../../../MoviesDetailModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -312,6 +314,7 @@
 				751B9BE82611A2DA005EA5A2 /* TVSeriesModel.swift */,
 				0B5DACCB269DC1A2002B41A6 /* MoviesModel.swift */,
 				0B0F3BA026B0213100674825 /* SeriesDetailModel.swift */,
+				75BF621F26B1766400137C35 /* MoviesDetailModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -424,6 +427,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75BF622026B1766400137C35 /* MoviesDetailModel.swift in Sources */,
 				0B4AAA432695F80400200E8D /* ItemViewModel.swift in Sources */,
 				0B6AEE40269862970071AE7C /* Navigator.swift in Sources */,
 				751B9BB22611A252005EA5A2 /* AppDelegate.swift in Sources */,
