@@ -23,6 +23,7 @@
 		0B6AEE3D269743460071AE7C /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6AEE3C269743460071AE7C /* ErrorMessage.swift */; };
 		0B6AEE40269862970071AE7C /* Navigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6AEE3F269862970071AE7C /* Navigator.swift */; };
 		0B6AEE42269880460071AE7C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6AEE41269880460071AE7C /* Constants.swift */; };
+		0B93AAB726B186B00068D9AD /* HelloWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93AAB626B186B00068D9AD /* HelloWorld.swift */; };
 		0BF5073C26A9D3FB00A3755A /* HomePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF5073B26A9D3FB00A3755A /* HomePageViewController.swift */; };
 		0BF5073E26A9D43000A3755A /* ItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF5073D26A9D43000A3755A /* ItemsViewController.swift */; };
 		0BF5074026A9D44F00A3755A /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF5073F26A9D44F00A3755A /* BaseViewController.swift */; };
@@ -69,6 +70,7 @@
 		0B6AEE3C269743460071AE7C /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
 		0B6AEE3F269862970071AE7C /* Navigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigator.swift; sourceTree = "<group>"; };
 		0B6AEE41269880460071AE7C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		0B93AAB626B186B00068D9AD /* HelloWorld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloWorld.swift; sourceTree = "<group>"; };
 		0BF5073B26A9D3FB00A3755A /* HomePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePageViewController.swift; sourceTree = "<group>"; };
 		0BF5073D26A9D43000A3755A /* ItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewController.swift; sourceTree = "<group>"; };
 		0BF5073F26A9D44F00A3755A /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 			isa = PBXGroup;
 			children = (
 				0BF5073B26A9D3FB00A3755A /* HomePageViewController.swift */,
+				0B93AAB626B186B00068D9AD /* HelloWorld.swift */,
 				0B8559E226A58A8E00B0809E /* Detail */,
 				0B8559DC26A588D300B0809E /* Home */,
 			);
@@ -452,6 +455,7 @@
 				0B4AAA4F26961C5100200E8D /* DetailsViewModel.swift in Sources */,
 				0B4AAA412695BDA300200E8D /* ItemsViewModel.swift in Sources */,
 				0B6AEE3D269743460071AE7C /* ErrorMessage.swift in Sources */,
+				0B93AAB726B186B00068D9AD /* HelloWorld.swift in Sources */,
 				0B5DACCC269DC1A2002B41A6 /* MoviesModel.swift in Sources */,
 				0B5DACCA269B2870002B41A6 /* SelectionCell.swift in Sources */,
 				0BF5073C26A9D3FB00A3755A /* HomePageViewController.swift in Sources */,
