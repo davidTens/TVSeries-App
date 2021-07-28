@@ -18,4 +18,3 @@ public struct SerieDetailModel: Decodable, Hashable {
     let original_language: String
     let vote_average: Decimal
 }
-

@@ -47,8 +47,6 @@ final class DetailsViewModel {
     private func handleApiResults(_ results: Result<DetailViewModel, ErrorHandling>) {
         switch results {
         case .success(let list):
-            
-            
             detailResults.value.append(list.overview)
             detailResults.value.append(list.name)
             detailResults.value.append(list.realeaseDate)
