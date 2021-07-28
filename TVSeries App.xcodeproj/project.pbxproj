@@ -10,7 +10,6 @@
 		0B0F3B9D26AF3EB000674825 /* DetailServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0F3B9C26AF3EB000674825 /* DetailServices.swift */; };
 		0B0F3B9F26AFD5E700674825 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0F3B9E26AFD5E700674825 /* DetailViewModel.swift */; };
 		0B0F3BA126B0213100674825 /* SeriesDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0F3BA026B0213100674825 /* SeriesDetailModel.swift */; };
-		0B0F3BA326B0217700674825 /* MoviesDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0F3BA226B0217700674825 /* MoviesDetailModel.swift */; };
 		0B0F3BA626B041B500674825 /* DetailFactiory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0F3BA526B041B500674825 /* DetailFactiory.swift */; };
 		0B4AAA412695BDA300200E8D /* ItemsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4AAA402695BDA300200E8D /* ItemsViewModel.swift */; };
 		0B4AAA432695F80400200E8D /* ItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4AAA422695F80400200E8D /* ItemViewModel.swift */; };
@@ -55,7 +54,6 @@
 		0B0F3B9C26AF3EB000674825 /* DetailServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailServices.swift; sourceTree = "<group>"; };
 		0B0F3B9E26AFD5E700674825 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		0B0F3BA026B0213100674825 /* SeriesDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesDetailModel.swift; sourceTree = "<group>"; };
-		0B0F3BA226B0217700674825 /* MoviesDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesDetailModel.swift; sourceTree = "<group>"; };
 		0B0F3BA526B041B500674825 /* DetailFactiory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailFactiory.swift; sourceTree = "<group>"; };
 		0B2DBB8526931CE60012F01A /* TVSeries App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TVSeries App.entitlements"; sourceTree = "<group>"; };
 		0B4AAA402695BDA300200E8D /* ItemsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewModel.swift; sourceTree = "<group>"; };
@@ -314,7 +312,6 @@
 				751B9BE82611A2DA005EA5A2 /* TVSeriesModel.swift */,
 				0B5DACCB269DC1A2002B41A6 /* MoviesModel.swift */,
 				0B0F3BA026B0213100674825 /* SeriesDetailModel.swift */,
-				0B0F3BA226B0217700674825 /* MoviesDetailModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -427,7 +424,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B0F3BA326B0217700674825 /* MoviesDetailModel.swift in Sources */,
 				0B4AAA432695F80400200E8D /* ItemViewModel.swift in Sources */,
 				0B6AEE40269862970071AE7C /* Navigator.swift in Sources */,
 				751B9BB22611A252005EA5A2 /* AppDelegate.swift in Sources */,
