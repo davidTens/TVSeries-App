@@ -10,8 +10,8 @@ import UIKit
 final class HomePageViewController: UIPageViewController {
     
     private lazy var viewControllerList: [UIViewController] = {
-        let seriesViewController = SeriesViewController(viewModel: ItemListFactory.makeSeriesViewModel())
-        let moviesViewController = MoviesViewController(viewModel: ItemListFactory.makeMoviesViewModel())
+        let seriesViewController = ItemsViewController(viewModel: ItemListFactory.makeSeriesViewModel())
+        let moviesViewController = ItemsViewController(viewModel: ItemListFactory.makeMoviesViewModel())
         return [seriesViewController, moviesViewController]
     }()
     

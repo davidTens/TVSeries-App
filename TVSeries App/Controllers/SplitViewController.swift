@@ -14,7 +14,7 @@ final class SplitViewController: UISplitViewController, UISplitViewControllerDel
         delegate = self
         
         let masterViewController = UINavigationController(rootViewController: HomePageViewController())
-        let detailViewController = UINavigationController(rootViewController: DetailController(viewModel: ItemListFactory.makeDetailViewModelForSeries()))
+        let detailViewController = UINavigationController(rootViewController: DetailController(viewModel: DetailFactory.makeDetailViewModelForSeries()))
         
         viewControllers = [masterViewController, detailViewController]
         preferredDisplayMode = .allVisible

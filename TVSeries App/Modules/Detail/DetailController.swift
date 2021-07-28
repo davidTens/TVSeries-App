@@ -9,29 +9,14 @@ import UIKit
 
 final class DetailController: UITableViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    var itemViewModel: ItemViewModel? {
-        didSet {
-            if let urlString = itemViewModel?.backdropPath, let name = itemViewModel?.originalName {
-                navigationItem.title = name
-                customImageView.loadImageUsingCacheWithURL(urlString: urlString)
-            }
-            listOfDataToShow.append(itemViewModel?.overview ?? absenceOfValue)
-            listOfDataToShow.append(itemViewModel?.name ?? absenceOfValue)
-            listOfDataToShow.append(itemViewModel?.realeaseDate ?? absenceOfValue)
-            listOfDataToShow.append(itemViewModel?.originCountry ?? absenceOfValue)
-            listOfDataToShow.append(itemViewModel?.language ?? absenceOfValue)
-        }
-    }
-    
-    private let viewModel: DetailViewModel
+    var id: Int?
+    private let viewModel: DetailsViewModel
     
     private let collCellId = "collectionCellId"
     private let tableCellId = "tableCellId"
     private lazy var absenceOfValue = "Nothing to show"
     private lazy var flowLayot = UICollectionViewFlowLayout()
     private let suggestedTitle = UILabel()
-    
-    private lazy var listOfDataToShow = [String]()
     
     deinit { print("OS reclaiming memory for DetailController - No Ratain Cycle/Leak!") }
     
@@ -71,7 +56,7 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
         return customCollectionView
     }()
     
-    init(viewModel: DetailViewModel) {
+    init(viewModel: DetailsViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -83,22 +68,25 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.separatorStyle = .none
+        navigationItem.title = "loading..."
         view.backgroundColor = Constants.dynamicBackgroundColors
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: tableCellId)
-        viewModel.delegate = self
         bindViewModel()
-        if let id = itemViewModel?.id {
+        
+        if let id = id {
+            viewModel.fetchData(id: id)
             viewModel.fetchSimilarData(with: id)
         }
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        viewModel.delegate = nil
-    }
-    
     private func bindViewModel() {
-        viewModel.result.bind({ [weak self] _ in
+        viewModel.detailResults.bind { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+                
+            }
+        }
+        viewModel.similarResults.bind({ [weak self] _ in
             DispatchQueue.main.async {
                 self?.customCollectionView.reloadData()
             }
@@ -119,8 +107,7 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
         header.addSubview(customImageView)
         
         noImageLabel.fillSuperview()
-        customImageView.fillSuperview()
-        
+        customImageView.fillSuperview()        
     }
     
     private func sectionTwoHeader() {
@@ -142,19 +129,19 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     //  MARK: - collectionView Data Source
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.result.value.count
+        return viewModel.similarResults.value.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collCellId, for: indexPath) as! DetailCollectionViewCell
-        let item = viewModel.result.value[indexPath.row]
+        let item = viewModel.similarResults.value[indexPath.row]
         cell.configure(item)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let item = viewModel.result.value[indexPath.row]
-        navigate(id: item)
+        let item = viewModel.similarResults.value[indexPath.row]
+        navigate(id: item.id)
     }
     
     // MARK: - tableView Data Source
@@ -168,7 +155,7 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? listOfDataToShow.count : 0
+        return section == 0 ? viewModel.detailResults.value.count - 1 : 0
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -182,7 +169,13 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
         highlighedColor.backgroundColor = .clear
         cell.selectedBackgroundView = highlighedColor
         
-        cell.customTextView.text = listOfDataToShow[indexPath.row]
+        for item in viewModel.detailResults.value {
+            if item.hasSuffix("jpg") {
+                customImageView.loadImageUsingCacheWithURL(urlString: item)
+            }
+        }
+        navigationItem.title = viewModel.detailResults.value[1]
+        cell.customTextView.text = viewModel.detailResults.value[indexPath.item]
         cell.descriptionLabel.text = Constants.descriptionData[indexPath.row]
         return cell
     }
@@ -194,19 +187,27 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
         return section == 0 ? headerSecOne : suggestedBackgroundView
     }
     
-}
-
-
-extension DetailController: Navigator {
-    func navigate(id: ItemViewModel) {
+    private func navigate(viewModel: DetailsViewModel, id: Int) {
         let detailViewController = DetailController(viewModel: viewModel)
-        detailViewController.itemViewModel = id
+        detailViewController.id = id
 
         if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
             let rootViewController = UINavigationController(rootViewController: detailViewController)
             showDetailViewController(rootViewController, sender: self)
         } else {
             navigationController?.pushViewController(detailViewController, animated: true)
+        }
+    }
+}
+
+
+extension DetailController: Navigator {
+    func navigate(id: Int) {
+        switch viewModel.type {
+        case .tvSeries:
+            navigate(viewModel: DetailFactory.makeDetailViewModelForSeries(), id: id)
+        case .movies:
+            navigate(viewModel: DetailFactory.makeDetailViewModelForMovies(), id: id)
         }
     }
 }

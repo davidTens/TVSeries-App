@@ -8,7 +8,7 @@
 import Foundation
 
 protocol Navigator {
-    func navigate(id: ItemViewModel)
+    func navigate(id: Int)
 }
 
 protocol SelectionValue {

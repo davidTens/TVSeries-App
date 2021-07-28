@@ -30,6 +30,10 @@ final class DetailTableViewCell: UITableViewCell {
         return customTextView
     }()
     
+    func configure(_ viewModel: DetailViewModel) {
+        customTextView.text = viewModel.name
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         
