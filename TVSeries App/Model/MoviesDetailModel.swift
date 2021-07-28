@@ -2,7 +2,7 @@
 //  MoviesDetailModel.swift
 //  TVSeries App
 //
-//  Created by David T on 7/27/21.
+//  Created by David T on 7/28/21.
 //
 
 import Foundation
