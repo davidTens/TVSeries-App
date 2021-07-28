@@ -18,4 +18,5 @@ public struct MoviesDetailModel: Decodable, Hashable {
     let original_language: String
     let poster_path: String
     let backdrop_path: String?
+    
 }
