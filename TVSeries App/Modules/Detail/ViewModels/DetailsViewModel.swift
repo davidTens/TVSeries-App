@@ -17,7 +17,8 @@ final class DetailsViewModel {
     private lazy var language = "en-US"
     private (set) var similarResults: Bindable<[ItemViewModel]> = Bindable([])
     private (set) var serviceState: Bindable<FetchingServiceState> = Bindable(.loading)
-    private (set) lazy var detailResults = Bindable<[String]>([])
+    private (set) lazy var detailResultsViewModel: Bindable<[DetailViewModel]> = Bindable([])
+    private (set) lazy var detailResultsArray = Bindable<[String]>([])
     
     init(_ service: DetailService, type: ListType) {
         self.detailService = service
@@ -47,12 +48,13 @@ final class DetailsViewModel {
     private func handleApiResults(_ results: Result<DetailViewModel, ErrorHandling>) {
         switch results {
         case .success(let list):
-            detailResults.value.append(list.overview)
-            detailResults.value.append(list.name)
-            detailResults.value.append(list.realeaseDate)
-            detailResults.value.append(list.originCountry)
-            detailResults.value.append(list.language)
-            detailResults.value.append(list.backdropPath)
+            detailResultsArray.value.append(list.overview)
+            detailResultsArray.value.append(list.name)
+            detailResultsArray.value.append(list.realeaseDate)
+            detailResultsArray.value.append(list.originCountry)
+            detailResultsArray.value.append(list.language)
+            detailResultsArray.value.append(list.backdropPath)
+            detailResultsViewModel.value.append(list)
         case .failure(let error):
             serviceState.value = .error(error.rawValue)
         }

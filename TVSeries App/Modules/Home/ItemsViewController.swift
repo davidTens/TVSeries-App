@@ -45,13 +45,14 @@ final class ItemsViewController: BaseViewController  {
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
                 self?.customRefreshControl.endRefreshing()
+                self?.hideErrorView()
             }
         }
         viewModel.serviceState.bind { [weak self] state in
             DispatchQueue.main.async {
                 switch state {
                 case .error(let error):
-                    self?.errorView.isHidden = false
+                    self?.displayErrorView()
                     self?.errorView.errorMessageLabel.text = error
                 case .loading, .finished:
                     break
@@ -70,7 +71,7 @@ final class ItemsViewController: BaseViewController  {
             viewModel.result.value.removeAll()
             tableView.reloadData()
         }
-        viewModel.fetchData(query: query!)
+        viewModel.searchData(query!)
     }
     
     private func navigate(viewModel: DetailsViewModel, id: Int) {
@@ -122,9 +123,12 @@ extension ItemsViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if searchTextField.isEditing == true  { } else {
-            if indexPath.row + 1 == viewModel.result.value.count && viewModel.serviceState.value != .loading {
-                viewModel.page += 1
+        
+        if indexPath.row + 1 == viewModel.result.value.count && viewModel.serviceState.value != .loading {
+            viewModel.page += 1
+            if searchTextField.text != "" {
+                viewModel.searchData(searchTextField.text!)
+            } else {
                 viewModel.fetchData()
             }
         }
@@ -156,7 +160,7 @@ extension ItemsViewController: UITextFieldDelegate {
             viewModel.page = 1
             viewModel.fetchData()
         }
-        errorView.isHidden = true
+        hideErrorView()
         textField.text = nil
         textField.resignFirstResponder()
         return false

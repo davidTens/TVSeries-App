@@ -28,19 +28,22 @@ final class ItemsViewModel {
     }
 
     func refresh() {
-        result.value.count == 0 ? fetchData() : print("done")
+        result.value.count == 0 ? fetchData() : print("no need to refresh")
     }
 
-    func fetchData(query: String? = nil) {
+    func fetchData() {
         serviceState.value = .loading
-        if let value = query {
-            let modifiedQuery = "&query=\(value)".replacingOccurrences(of: " ", with: "%20")
-            itemsService.searchData(language: language, page: page, query: modifiedQuery, completion: handleApiResults)
-        } else {
-            itemsService.fetchData(language: language, page: page, completion: handleApiResults)
+        itemsService.fetchData(language: language, page: page, completion: handleApiResults)
+    }
+
+    func searchData(_ query: String) {
+        serviceState.value = .loading
+        if result.value.count != 1 {
+            let queryWithOccurrences = "&query=\(query)".replacingOccurrences(of: " ", with: "%20")
+            itemsService.searchData(language: language, page: page, query: queryWithOccurrences, completion: handleApiResults)
         }
     }
-
+    
     private func handleApiResults(_ results: Result<[ItemViewModel], ErrorHandling>) {
         switch results {
         case .success(let list):

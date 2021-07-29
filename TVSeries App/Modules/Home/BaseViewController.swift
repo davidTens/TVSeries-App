@@ -11,9 +11,17 @@ class BaseViewController: UIViewController {
     
     lazy var customRefreshControl = UIRefreshControl()
     
+    private lazy var backgroundContainerView: UIView = {
+        let backgroundContainerView = UIView()
+        backgroundContainerView.backgroundColor = .clear
+        backgroundContainerView.isHidden = true
+        return backgroundContainerView
+    }()
+    
     lazy var errorView: ErrorView = {
         let errorView = ErrorView()
-        errorView.isHidden = true
+        errorView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hideErrorView)))
+        errorView.alpha = 0
         return errorView
     }()
     
@@ -54,8 +62,11 @@ class BaseViewController: UIViewController {
         customRefreshControl.tintColor = Constants.dynamicSubColors
         tableView.addSubview(customRefreshControl)
         
-        view.addSubview(errorView)
-        errorView.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 80, left: 0, bottom: 0, right: 0), size: .init(width: 0, height: 45))
+        view.addSubview(backgroundContainerView)
+        backgroundContainerView.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 56, left: 0, bottom: 0, right: 0), size: .init(width: 0, height: 50))
+        
+        backgroundContainerView.addSubview(errorView)
+        errorView.fillSuperview()
         
         view.addSubview(headerView)
         
@@ -69,8 +80,27 @@ class BaseViewController: UIViewController {
     
     func setup() { }
     
+    func displayErrorView() {
+        backgroundContainerView.isHidden = false
+        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            self.errorView.alpha = 1
+            self.backgroundContainerView.layoutIfNeeded()
+        }, completion: nil)
+    }
+    
+    @objc func hideErrorView() {
+        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            self.errorView.alpha = 0
+            self.backgroundContainerView.layoutIfNeeded()
+        }, completion: { _ in
+            self.backgroundContainerView.isHidden = true
+        })
+        
+    }
+    
     @objc func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
         if searchTextField.isEditing {
+            hideErrorView()
             searchTextField.resignFirstResponder()
         } else { }
     }

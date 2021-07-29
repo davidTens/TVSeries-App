@@ -80,7 +80,7 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     }
     
     private func bindViewModel() {
-        viewModel.detailResults.bind { [weak self] _ in
+        viewModel.detailResultsArray.bind { [weak self] _ in
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
                 
@@ -155,7 +155,7 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? viewModel.detailResults.value.count - 1 : 0
+        return section == 0 ? viewModel.detailResultsArray.value.count - 1 : 0
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -169,13 +169,12 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
         highlighedColor.backgroundColor = .clear
         cell.selectedBackgroundView = highlighedColor
         
-        for item in viewModel.detailResults.value {
-            if item.hasSuffix("jpg") {
-                customImageView.loadImageUsingCacheWithURL(urlString: item)
-            }
+        viewModel.detailResultsViewModel.value.forEach { item in
+            navigationItem.title = item.name
+            customImageView.loadImageUsingCacheWithURL(urlString: item.backdropPath)
         }
-        navigationItem.title = viewModel.detailResults.value[1]
-        cell.customTextView.text = viewModel.detailResults.value[indexPath.item]
+        
+        cell.customTextView.text = viewModel.detailResultsArray.value[indexPath.item]
         cell.descriptionLabel.text = Constants.descriptionData[indexPath.row]
         return cell
     }

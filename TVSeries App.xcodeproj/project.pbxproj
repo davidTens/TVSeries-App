@@ -181,6 +181,7 @@
 		0B8559DC26A588D300B0809E /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				0BA7023B26B2CA0100002145 /* Model */,
 				0B0F3BA426B031DD00674825 /* Services */,
 				0B8559E126A58A2D00B0809E /* ViewModels */,
 				0BD9F7F826A5A42200617669 /* Views */,
@@ -202,6 +203,7 @@
 		0B8559E226A58A8E00B0809E /* Detail */ = {
 			isa = PBXGroup;
 			children = (
+				0BA7023C26B2CA2B00002145 /* Model */,
 				0B0F3BA726B041DC00674825 /* Services */,
 				0BD9F7F926A5A45900617669 /* Views */,
 				0B8559E326A58ACB00B0809E /* ViewModels */,
@@ -218,6 +220,24 @@
 				0B4AAA4E26961C5100200E8D /* DetailsViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		0BA7023B26B2CA0100002145 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				751B9BE82611A2DA005EA5A2 /* TVSeriesModel.swift */,
+				0B5DACCB269DC1A2002B41A6 /* MoviesModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		0BA7023C26B2CA2B00002145 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0B0F3BA026B0213100674825 /* SeriesDetailModel.swift */,
+				0B65B74926B17EC500501E93 /* MoviesDetailModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		0BB113D1268E330200BDE153 /* Support */ = {
@@ -274,7 +294,6 @@
 				0B4AAA472695F87B00200E8D /* Binding */,
 				0B4AAA3F2695BD5600200E8D /* ViewModels */,
 				0B2DBB842691C98C0012F01A /* Resources */,
-				751B9BE62611A2DA005EA5A2 /* Model */,
 				751B9BE02611A2CF005EA5A2 /* Extensions */,
 				751B9BD22611A2BA005EA5A2 /* Networking */,
 				751B9BCA2611A2AB005EA5A2 /* Controllers */,
@@ -306,17 +325,6 @@
 				751B9BE12611A2CF005EA5A2 /* Extensions.swift */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		751B9BE62611A2DA005EA5A2 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				751B9BE82611A2DA005EA5A2 /* TVSeriesModel.swift */,
-				0B5DACCB269DC1A2002B41A6 /* MoviesModel.swift */,
-				0B0F3BA026B0213100674825 /* SeriesDetailModel.swift */,
-				0B65B74926B17EC500501E93 /* MoviesDetailModel.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		751B9BF82611A340005EA5A2 /* TVSeries AppTests */ = {
