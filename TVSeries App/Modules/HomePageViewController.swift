@@ -39,8 +39,8 @@ final class HomePageViewController: UIPageViewController {
         navigationController?.navigationBar.barTintColor = Constants.dynamicBackgroundColors
         navigationController?.navigationBar.tintColor = Constants.dynamicSubColors
         
-//        navigationController?.view.addSubview(horizontalSelectionView)
-//        horizontalSelectionView.layout(top: navigationController?.navigationBar.bottomAnchor, leading: navigationController?.view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: navigationController?.view.safeAreaLayoutGuide.trailingAnchor, size: .init(width: 0, height: 50))
+        view.addSubview(horizontalSelectionView)
+        horizontalSelectionView.layout(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, size: .init(width: 0, height: 50))
         
         if let first = viewControllerList.first {
             setViewControllers([first], direction: .forward, animated: true, completion: nil)
@@ -48,7 +48,11 @@ final class HomePageViewController: UIPageViewController {
     }
     
     private func scrollToSelectionIndex(_ index: Int) {
-        //
+//        for view in self.view.subviews {
+//            if let scrollView = view as? UIScrollView {
+//                scrollView.delegate = self
+//            }
+//        }
     }
 }
 

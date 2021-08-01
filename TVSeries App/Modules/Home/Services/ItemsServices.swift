@@ -21,7 +21,7 @@ struct SeriesServices: ItemsService {
     }
     
     func fetchData(language: String, page: Int, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void) {
-        api.get(endpoint: NetworkConstants.popularTVSeries,
+        api.get(endpoint: NetworkConstants.topRatedTVSeries,
                        language: language, page: page, query: nil) { (result: Result<TVSeriesGroup, ErrorHandling>) in
             completion( result.map { item in
                 return item.results.map { item in

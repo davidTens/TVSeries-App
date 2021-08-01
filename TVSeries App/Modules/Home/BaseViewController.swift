@@ -49,7 +49,7 @@ class BaseViewController: UIViewController {
         let tableView = UITableView()
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
-        tableView.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
         return tableView
     }()
     

@@ -74,9 +74,9 @@ final class ItemsViewController: BaseViewController  {
         viewModel.searchData(query!)
     }
     
-    private func navigate(viewModel: DetailsViewModel, id: Int) {
+    private func navigate(viewModel: DetailsViewModel, itemViewModel: ItemViewModel) {
         let detailViewController = DetailController(viewModel: viewModel)
-        detailViewController.id = id
+        detailViewController.itemViewModel = itemViewModel
 
         if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
             let rootViewController = UINavigationController(rootViewController: detailViewController)
@@ -89,12 +89,12 @@ final class ItemsViewController: BaseViewController  {
 
 
 extension ItemsViewController: Navigator {
-    func navigate(id: Int) {
+    func navigate(itemViewModel: ItemViewModel) {
         switch viewModel.type {
         case .tvSeries:
-            navigate(viewModel: DetailFactory.makeDetailViewModelForSeries(), id: id)
+            navigate(viewModel: DetailFactory.makeDetailViewModelForSeries(), itemViewModel: itemViewModel)
         case .movies:
-            navigate(viewModel: DetailFactory.makeDetailViewModelForMovies(), id: id)
+            navigate(viewModel: DetailFactory.makeDetailViewModelForMovies(), itemViewModel: itemViewModel)
         }
     }
 }
@@ -111,8 +111,8 @@ extension ItemsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let serie = viewModel.result.value[indexPath.row] 
-        navigate(id: serie.id)
+        let serie = viewModel.result.value[indexPath.row]
+        navigate(itemViewModel: serie)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
