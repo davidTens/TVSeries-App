@@ -10,6 +10,15 @@ import Foundation
 enum ListType {
     case tvSeries
     case movies
+    
+    var searchTextFieldPlaceholder: String {
+        switch self {
+        case .tvSeries:
+            return "Search TV Series"
+        case .movies:
+            return "Search Movies"
+        }
+    }
 }
 
 final class ItemsViewModel {
@@ -29,6 +38,10 @@ final class ItemsViewModel {
 
     func refresh() {
         result.value.count == 0 ? fetchData() : print("no need to refresh")
+    }
+    
+    func makeSearchTextFieldPlaceholder() -> String {
+        return type.searchTextFieldPlaceholder
     }
 
     func fetchData() {

@@ -31,13 +31,7 @@ final class ItemsViewController: BaseViewController  {
         bindViewModel()
         customRefreshControl.beginRefreshing()
         viewModel.fetchData()
-        
-        switch viewModel.type {
-        case .tvSeries:
-            searchTextField.placeholder = "Search TV Series"
-        case .movies:
-            searchTextField.placeholder = "Search Movies"
-        }
+        searchTextField.placeholder = viewModel.makeSearchTextFieldPlaceholder()
     }
     
     private func bindViewModel() {
