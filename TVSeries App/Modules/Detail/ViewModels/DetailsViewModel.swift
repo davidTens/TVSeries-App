@@ -17,10 +17,12 @@ final class DetailsViewModel {
     private (set) var similarResults: Bindable<[ItemViewModel]> = Bindable([])
     private (set) var serviceState: Bindable<FetchingServiceState> = Bindable(.loading)
     private (set) lazy var detailResultsArray = Bindable<[String]>([])
+    private weak var coordinator: DetailCoordinator?
     
-    init(_ service: DetailService, type: ListType) {
+    init(_ service: DetailService, type: ListType, coordinator: DetailCoordinator) {
         self.detailService = service
         self.type = type
+        self.coordinator = coordinator
     }
     
     func fetchSimilarData(with id: Int) {

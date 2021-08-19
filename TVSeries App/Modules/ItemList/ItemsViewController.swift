@@ -55,6 +55,9 @@ final class ItemsViewController: BaseViewController  {
         }
     }
     
+    var appCordinator: AppCoordinator?
+    var navigationRouter: NavigationRouter?
+    
     @objc private func refresh() {
         viewModel.refresh()
         customRefreshControl.endRefreshing()
@@ -82,16 +85,16 @@ final class ItemsViewController: BaseViewController  {
 }
 
 
-extension ItemsViewController: Navigator {
-    func navigate(itemViewModel: ItemViewModel) {
-        switch viewModel.type {
-        case .tvSeries:
-            navigate(viewModel: DetailFactory.makeDetailViewModelForSeries(), itemViewModel: itemViewModel)
-        case .movies:
-            navigate(viewModel: DetailFactory.makeDetailViewModelForMovies(), itemViewModel: itemViewModel)
-        }
-    }
-}
+//extension ItemsViewController: Navigator {
+//    func navigate(itemViewModel: ItemViewModel) {
+//        switch viewModel.type {
+//        case .tvSeries:
+//            navigate(viewModel: DetailFactory.makeDetailViewModelForSeries(), itemViewModel: itemViewModel)
+//        case .movies:
+//            navigate(viewModel: DetailFactory.makeDetailViewModelForMovies(), itemViewModel: itemViewModel)
+//        }
+//    }
+//}
 
 
 extension ItemsViewController: UITableViewDelegate, UITableViewDataSource {
@@ -100,13 +103,13 @@ extension ItemsViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.result.value.count
+        return viewModel.makeNumberOfRowsInSection()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let serie = viewModel.result.value[indexPath.row]
-        navigate(itemViewModel: serie)
+        viewModel.select(itemViewModel: serie)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

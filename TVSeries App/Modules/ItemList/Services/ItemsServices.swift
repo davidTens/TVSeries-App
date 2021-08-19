@@ -7,14 +7,14 @@
 
 import Foundation
 
-protocol ItemsService {
+protocol ItemsService: AnyObject {
     func fetchData(language: String, page: Int, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void)
     func searchData(language: String, page: Int, query: String?, completion: @escaping (Result<[ItemViewModel], ErrorHandling>) -> Void)
 }
 
-struct SeriesServices: ItemsService {
+final class SeriesService: ItemsService {
     
-    let api: ApiService
+    private let api: ApiService
     
     init(_ api: ApiService) {
         self.api = api
@@ -43,9 +43,9 @@ struct SeriesServices: ItemsService {
     }
 }
 
-struct MoviesServices: ItemsService {
+final class MoviesService: ItemsService {
     
-    let api: ApiService
+    private let api: ApiService
     
     init(_ api: ApiService) {
         self.api = api

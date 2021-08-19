@@ -8,17 +8,11 @@
 import Foundation
 
 struct DetailFactory {
-    static func makeDetailViewModelForSeries() -> DetailsViewModel {
+        
+    static func makeDetailViewModel(listType: ListType, coordinator: DetailCoordinator) -> DetailsViewModel {
         let apiService = ApiService()
         let seriesService = SeriesDetailService(apiService)
-        let viewModel = DetailsViewModel(seriesService, type: .tvSeries)
-        return viewModel
-    }
-    
-    static func makeDetailViewModelForMovies() -> DetailsViewModel {
-        let apiService = ApiService()
-        let seriesService = MoviesDetailService(apiService)
-        let viewModel = DetailsViewModel(seriesService, type: .movies)
+        let viewModel = DetailsViewModel(seriesService, type: listType, coordinator: coordinator)
         return viewModel
     }
 }

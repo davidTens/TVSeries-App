@@ -145,8 +145,8 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let item = viewModel.similarResults.value[indexPath.row]
-        navigate(itemViewModel: item)
+//        let item = viewModel.similarResults.value[indexPath.row]
+//        navigate(itemViewModel: item)
     }
     
     // MARK: - tableView Data Source
@@ -186,27 +186,26 @@ final class DetailController: UITableViewController, UICollectionViewDelegate, U
     }
     
     private func navigate(viewModel: DetailsViewModel, itemViewModel: ItemViewModel) {
-        let detailViewController = DetailController(viewModel: viewModel)
-        detailViewController.itemViewModel = itemViewModel
-
-        if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
-            let rootViewController = UINavigationController(rootViewController: detailViewController)
-            showDetailViewController(rootViewController, sender: self)
-        } else {
-            navigationController?.pushViewController(detailViewController, animated: true)
-        }
+//        let detailViewController = DetailController(viewModel: viewModel)
+//        detailViewController.itemViewModel = itemViewModel
+//
+//        if UIDevice.current.userInterfaceIdiom == .pad || Constants.deviceModelId.contains(UIDevice.current.modelName) && UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft {
+//            let rootViewController = UINavigationController(rootViewController: detailViewController)
+//            showDetailViewController(rootViewController, sender: self)
+//        } else {
+//            navigationController?.pushViewController(detailViewController, animated: true)
+//        }
     }
 }
 
 
-extension DetailController: Navigator {
-    func navigate(itemViewModel: ItemViewModel) {
-        switch viewModel.type {
-        case .tvSeries:
-            navigate(viewModel: DetailFactory.makeDetailViewModelForSeries(), itemViewModel: itemViewModel)
-        case .movies:
-            navigate(viewModel: DetailFactory.makeDetailViewModelForMovies(), itemViewModel: itemViewModel)
-        }
-    }
-}
-
+//extension DetailController: Navigator {
+//    func navigate(itemViewModel: ItemViewModel) {
+//        switch viewModel.type {
+//        case .tvSeries:
+//            navigate(viewModel: DetailFactory.makeDetailViewModelForSeries(), itemViewModel: itemViewModel)
+//        case .movies:
+//            navigate(viewModel: DetailFactory.makeDetailViewModelForMovies(), itemViewModel: itemViewModel)
+//        }
+//    }
+//}

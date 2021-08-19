@@ -7,12 +7,16 @@
 
 import Foundation
 
-final class ApiService {
+protocol APIClient: AnyObject {
+    func get<T: Decodable> (endpoint: String, language: String, page: Int, query: String?, completion: @escaping (Result<T, ErrorHandling>) -> Void)
+}
+
+final class ApiService: APIClient {
     
-    func get<T> (endpoint: String, language: String, page: Int, query: String? = nil, completion: @escaping (Result<T, ErrorHandling>) -> Void) where T: Decodable {
+    func get<T>(endpoint: String, language: String, page: Int, query: String? = nil, completion: @escaping (Result<T, ErrorHandling>) -> Void) where T: Decodable {
         
         let finalPath = NetworkConstants.baseURL + endpoint + "?api_key=" + NetworkConstants.apiKey + "&language=" + language + "&page=\(page)\(query ?? "")"
-        print(finalPath)
+        print("API: \(finalPath)")
         guard let url = URL(string: finalPath)
         else {
             return completion(.failure(.apiError))

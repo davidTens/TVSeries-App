@@ -30,14 +30,24 @@ final class ItemsViewModel {
     private lazy var language = "en-US"
     private (set) var result: Bindable<[ItemViewModel]> = Bindable([])
     private (set) var serviceState: Bindable<FetchingServiceState> = Bindable(.loading)
+    weak var coordinator: HomeCoordinator?
 
-    init(_ service: ItemsService, type: ListType) {
+    init(_ service: ItemsService, type: ListType, coordinator: HomeCoordinator) {
         self.itemsService = service
         self.type = type
+        self.coordinator = coordinator
     }
 
     func refresh() {
-        result.value.count == 0 ? fetchData() : print("no need to refresh")
+        result.value.count == 0 ? fetchData() : nil
+    }
+    
+    func select(itemViewModel: ItemViewModel) {
+        coordinator?.openItem(itemViewModel: itemViewModel, listType: type)
+    }
+    
+    func makeNumberOfRowsInSection() -> Int {
+        return result.value.count
     }
     
     func makeSearchTextFieldPlaceholder() -> String {

@@ -11,13 +11,23 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    
+    private var appCoordinator: AppCoordinator?
+    private var homeCoordinator: HomeCoordinator?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        
+        let splitViewController = UISplitViewController(style: .doubleColumn)
+        splitViewController.preferredDisplayMode = .oneBesideSecondary
+        let router = SplitRouter(viewController: splitViewController)
+        appCoordinator = AppCoordinator(router: router)
+        appCoordinator?.start(animated: false)
+        
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
-        window?.rootViewController = SplitViewController()
+        window?.rootViewController = splitViewController
         
         return true
     }
