@@ -8,39 +8,25 @@
 import Foundation
 import Combine
 
-enum ListType {
-    case tvSeries
-    case movies
-    
-    var searchTextFieldPlaceholder: String {
-        switch self {
-        case .tvSeries:
-            return "Search TV Series"
-        case .movies:
-            return "Search Movies"
-        }
-    }
-}
-
 final class ItemsViewModel {
 
-    let type: ListType
+    private let type: ListType
     private let itemsService: ItemsService
 
     lazy var page = 1
     private lazy var language = "en-US"
-//    private (set) var result: Bindable<[ItemViewModel]> = Bindable([])
-    private (set) var serviceState: Bindable<FetchingServiceState> = Bindable(.loading)
     weak var coordinator: HomeCoordinator?
+    
+    @Published var searchText: String?
+    @Published var fetchingState: FetchingServiceState = FetchingServiceState.loading
+    
+    private var cancellables = Set<AnyCancellable>()
     
     private let itemsSubject = CurrentValueSubject<[ItemViewModel], Error>([])
     lazy var items: AnyPublisher<[ItemViewModel], Never> = itemsSubject.replaceError(with: []).eraseToAnyPublisher()
     
     private let tableReloadTrigger = PassthroughSubject<Void, Never>()
     lazy var shouldReloadTableView: AnyPublisher<Void, Never> = tableReloadTrigger.eraseToAnyPublisher()
-    
-    @Published var searchText: String?
-    private var cancellables = Set<AnyCancellable>()
     
     let selectedIndexPath = PassthroughSubject<IndexPath, Never>()
 
@@ -93,7 +79,7 @@ final class ItemsViewModel {
     }
     
     func moveToNewPageIfNeeded(indexPath: IndexPath) {
-        if indexPath.row + 1 == itemsSubject.value.count && serviceState.value != .loading {
+        if indexPath.row + 1 == itemsSubject.value.count && fetchingState != .loading {
             page += 1
             if let text = searchText, !text.isEmpty {
                 searchData(text)
@@ -125,12 +111,12 @@ final class ItemsViewModel {
     }
 
     func fetchData() {
-        serviceState.value = .loading
+        fetchingState = .loading
         itemsService.fetchData(language: language, page: page, completion: handleApiResults)
     }
 
     func searchData(_ query: String) {
-        serviceState.value = .loading
+        fetchingState = .loading
         if itemsSubject.value.count != 1 {
             let queryWithOccurrences = "&query=\(query)".replacingOccurrences(of: " ", with: "%20")
             itemsService.searchData(language: language, page: page, query: queryWithOccurrences, completion: handleApiResults)
@@ -140,11 +126,26 @@ final class ItemsViewModel {
     private func handleApiResults(_ results: Result<[ItemViewModel], ErrorHandling>) {
         switch results {
         case .success(let list):
-//            itemsSubject.value.append(contentsOf: list)
             itemsSubject.send(itemsSubject.value + list)
         case .failure(let error):
-            serviceState.value = .error(error.rawValue)
+            print(error)
+            fetchingState = .error(error.rawValue)
         }
-        serviceState.value = .finished
+        fetchingState = .finished
+    }
+}
+
+
+enum ListType {
+    case tvSeries
+    case movies
+    
+    var searchTextFieldPlaceholder: String {
+        switch self {
+        case .tvSeries:
+            return "Search TV Series"
+        case .movies:
+            return "Search Movies"
+        }
     }
 }

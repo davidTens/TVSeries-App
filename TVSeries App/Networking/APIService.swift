@@ -6,9 +6,19 @@
 //
 
 import Foundation
+import Combine
 
 protocol APIClient: AnyObject {
     func get<T: Decodable> (endpoint: String, language: String, page: Int, query: String?, completion: @escaping (Result<T, ErrorHandling>) -> Void)
+}
+
+extension APIClient {
+    func get<T: Codable>(endpoint: String, language: String, page: Int, query: String?) -> AnyPublisher<T, ErrorHandling> {
+        Future { promise in
+            self.get(endpoint: endpoint, language: language, page: page, query: query, completion: promise)
+        }
+        .eraseToAnyPublisher()
+    }
 }
 
 final class ApiService: APIClient {

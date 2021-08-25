@@ -2,7 +2,7 @@
 //  SeriesViewController.swift
 //  TVSeries App
 //
-//  Created by David on 7/22/21.
+//  Created by David T on 7/22/21.
 //
 
 import UIKit
@@ -12,7 +12,6 @@ final class ItemsViewController: BaseViewController  {
     
     private let cellId = "cellId"
     private let viewModel: ItemsViewModel
-    
     private var cancellables = Set<AnyCancellable>()
     
     init(viewModel: ItemsViewModel) {
@@ -38,14 +37,6 @@ final class ItemsViewController: BaseViewController  {
     }
     
     private func bindViewModel() {
-//        viewModel.result.bind { [weak self] _ in
-//            DispatchQueue.main.async {
-//                self?.tableView.reloadData()
-//                self?.customRefreshControl.endRefreshing()
-//                self?.hideErrorView()
-//            }
-//        }
-        
         viewModel.items
             .receive(on: RunLoop.main)
             .sink { [weak self] items in
@@ -62,8 +53,9 @@ final class ItemsViewController: BaseViewController  {
             }
             .store(in: &cancellables)
         
-        viewModel.serviceState.bind { [weak self] state in
-            DispatchQueue.main.async {
+        viewModel.$fetchingState
+            .receive(on: RunLoop.main)
+            .sink { [weak self] state in
                 switch state {
                 case .error(let error):
                     self?.displayErrorView()
@@ -72,7 +64,7 @@ final class ItemsViewController: BaseViewController  {
                     break
                 }
             }
-        }
+            .store(in: &cancellables)
     }
     
     var appCordinator: AppCoordinator?
