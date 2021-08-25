@@ -6,11 +6,14 @@
 //
 
 import UIKit
+import Combine
 
 final class ItemsViewController: BaseViewController  {
     
     private let cellId = "cellId"
     private let viewModel: ItemsViewModel
+    
+    private var cancellables = Set<AnyCancellable>()
     
     init(viewModel: ItemsViewModel) {
         self.viewModel = viewModel
@@ -35,13 +38,30 @@ final class ItemsViewController: BaseViewController  {
     }
     
     private func bindViewModel() {
-        viewModel.result.bind { [weak self] _ in
-            DispatchQueue.main.async {
+//        viewModel.result.bind { [weak self] _ in
+//            DispatchQueue.main.async {
+//                self?.tableView.reloadData()
+//                self?.customRefreshControl.endRefreshing()
+//                self?.hideErrorView()
+//            }
+//        }
+        
+        viewModel.items
+            .receive(on: RunLoop.main)
+            .sink { [weak self] items in
                 self?.tableView.reloadData()
                 self?.customRefreshControl.endRefreshing()
                 self?.hideErrorView()
             }
-        }
+            .store(in: &cancellables)
+        
+        viewModel.shouldReloadTableView
+            .receive(on: RunLoop.main)
+            .sink { [weak self]  in
+                self?.tableView.reloadData()
+            }
+            .store(in: &cancellables)
+        
         viewModel.serviceState.bind { [weak self] state in
             DispatchQueue.main.async {
                 switch state {
@@ -61,14 +81,6 @@ final class ItemsViewController: BaseViewController  {
     @objc private func refresh() {
         viewModel.refresh()
         customRefreshControl.endRefreshing()
-    }
-    
-    private func performSearch(_ query: String?) {
-        if viewModel.result.value.count > 0 {
-            viewModel.result.value.removeAll()
-            tableView.reloadData()
-        }
-        viewModel.searchData(query!)
     }
     
     private func navigate(viewModel: DetailsViewModel, itemViewModel: ItemViewModel) {
@@ -108,27 +120,18 @@ extension ItemsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let serie = viewModel.result.value[indexPath.row]
-        viewModel.select(itemViewModel: serie)
+        viewModel.selectedIndexPath.send(indexPath)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! MainListCell
-        let serie = viewModel.result.value[indexPath.row]
+        let serie = viewModel.getItemAtIndex(indexPath: indexPath)
         cell.configure(serie)
         return cell
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-        if indexPath.row + 1 == viewModel.result.value.count && viewModel.serviceState.value != .loading {
-            viewModel.page += 1
-            if searchTextField.text != "" {
-                viewModel.searchData(searchTextField.text!)
-            } else {
-                viewModel.fetchData()
-            }
-        }
+        viewModel.moveToNewPageIfNeeded(indexPath: indexPath)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -144,19 +147,14 @@ extension ItemsViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField.isEditing && textField.text != "" {
-            performSearch(textField.text)
+            viewModel.performSearch(textField.text)
         }
         textField.resignFirstResponder()
         return true
     }
     
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        if viewModel.result.value.count >= 0 {
-            viewModel.result.value.removeAll()
-            tableView.reloadData()
-            viewModel.page = 1
-            viewModel.fetchData()
-        }
+        viewModel.clearTableViewIfNeeded()
         hideErrorView()
         textField.text = nil
         textField.resignFirstResponder()
